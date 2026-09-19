@@ -1,26 +1,695 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-hardbop);
+  --font-body: var(--font-headingnow);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ============================================================
+   DEVSTARLABS DESIGN SYSTEM
+   Layer 0 — proportional scale (1440px reference canvas)
+   Layer 1 — raw palette (--c-*)
+   Layer 2 — semantic theme (--t-*), swapped per .ui-* class
+   ============================================================ */
+
+:root {
+  /* 1px at 1440w, halves to 0.5px floor at 720w, discrete below */
+  --scale-px: clamp(0.5px, 0.06944vw, 1px);
+
+  /* raw palette — exact follow.art tokens (--c-* in entry.css) */
+  --c-orange: #f4793a;
+  --c-orange-rgb: 244, 121, 58;
+  --c-sand: #c5939d; /* follow.art pink */
+  --c-sand-rgb: 197, 147, 157;
+  --c-sage: #8e9487; /* follow.art green */
+  --c-sage-rgb: 142, 148, 135;
+  --c-steel: #8498ac; /* follow.art blue */
+  --c-steel-rgb: 132, 152, 172;
+  --c-ink: #000000;
+  --c-ink-rgb: 0, 0, 0;
+  --c-paper: #ffffff;
+  --c-paper-rgb: 255, 255, 255;
+  --c-grey: #9c9c9c;
+  --c-grey-rgb: 156, 156, 156;
+  --c-error: #ea1b4f;
+  --c-error-rgb: 234, 27, 79;
+
+  /* alpha ramps */
+  --paper-10: rgba(var(--c-paper-rgb), 0.1);
+  --paper-20: rgba(var(--c-paper-rgb), 0.2);
+  --paper-30: rgba(var(--c-paper-rgb), 0.3);
+  --paper-60: rgba(var(--c-paper-rgb), 0.6);
+  --ink-03: rgba(var(--c-ink-rgb), 0.03);
+  --ink-10: rgba(var(--c-ink-rgb), 0.1);
+  --ink-15: rgba(var(--c-ink-rgb), 0.15);
+  --ink-60: rgba(var(--c-ink-rgb), 0.6);
+
+  /* spacing (multiply the scale) */
+  /* follow.art --spacing. NOTE: must not be named "--spacing" — that is
+     Tailwind v4's own spacing scale variable, and the collision multiplies
+     every Tailwind padding and gap utility by it */
+  --page-spacing: calc(var(--scale-px) * 20);
+  --sp-1: calc(var(--scale-px) * 5);
+  --sp-2: calc(var(--scale-px) * 10);
+  --sp-3: calc(var(--scale-px) * 15);
+  --sp-4: calc(var(--scale-px) * 20);
+  --sp-5: calc(var(--scale-px) * 30);
+  --sp-6: calc(var(--scale-px) * 50);
+  --sp-7: calc(var(--scale-px) * 80);
+  --sp-8: calc(var(--scale-px) * 110);
+  --sp-9: calc(var(--scale-px) * 150);
+
+  /* radii */
+  --radius-pill: 999px;
+  --radius-card: calc(var(--scale-px) * 16);
+
+  /* motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-ui: 250ms;
+
+  /* semantic theme — light default */
+  --t-bg: var(--c-paper);
+  --t-bg-rgb: var(--c-paper-rgb);
+  --t-text: var(--c-ink);
+  --t-text-rgb: var(--c-ink-rgb);
+  --t-heading: var(--c-ink);
+  --t-heading-rgb: var(--c-ink-rgb);
+  --t-muted: var(--c-grey);
+  --t-muted-rgb: var(--c-grey-rgb);
+  --t-line: var(--ink-15);
+  --t-line-soft: var(--ink-10);
+  --t-accent: var(--c-orange);
+  --t-accent-rgb: var(--c-orange-rgb);
+  --t-btn-bg: var(--c-ink);
+  --t-btn-text: var(--c-paper);
+  --t-card-bg: var(--c-paper);
+  --t-card-text: var(--c-ink);
+}
+
+/* ---- theme sheets: one class swaps the whole system ---- */
+.ui-light {
+  --t-bg: var(--c-paper);
+  --t-bg-rgb: var(--c-paper-rgb);
+}
+.ui-dark {
+  --t-bg: var(--c-ink);
+  --t-bg-rgb: var(--c-ink-rgb);
+  --t-text: var(--c-paper);
+  --t-text-rgb: var(--c-paper-rgb);
+  --t-heading: var(--c-paper);
+  --t-heading-rgb: var(--c-paper-rgb);
+  --t-muted: var(--c-grey);
+  --t-muted-rgb: var(--c-grey-rgb);
+  --t-line: var(--paper-30);
+  --t-line-soft: var(--paper-20);
+  --t-btn-bg: var(--c-paper);
+  --t-btn-text: var(--c-ink);
+  --t-card-bg: rgba(var(--c-paper-rgb), 0.06);
+  --t-card-text: var(--c-paper);
+}
+.ui-orange {
+  /* follow.art .ui-orange: white body text, white-60 muted, white-30 lines
+     (headings stay black — that's their black-on-orange wordmark look) */
+  --t-bg: var(--c-orange);
+  --t-bg-rgb: var(--c-orange-rgb);
+  --t-text: var(--c-paper);
+  --t-text-rgb: var(--c-paper-rgb);
+  --t-heading: var(--c-paper);
+  --t-heading-rgb: var(--c-paper-rgb);
+  --t-muted: var(--paper-60);
+  --t-line: var(--paper-30);
+  --t-line-soft: var(--paper-20);
+  --t-accent: var(--c-ink);
+  --t-accent-rgb: var(--c-ink-rgb);
+  --t-btn-bg: var(--c-ink);
+  --t-btn-text: var(--c-paper);
+  --t-card-bg: rgba(var(--c-ink-rgb), 0.9);
+  --t-card-text: var(--c-paper);
+}
+.ui-sand {
+  --t-bg: var(--c-sand);
+  --t-bg-rgb: var(--c-sand-rgb);
+}
+.ui-sage {
+  --t-bg: var(--c-sage);
+  --t-bg-rgb: var(--c-sage-rgb);
+  --t-text: var(--c-paper);
+  --t-text-rgb: var(--c-paper-rgb);
+  --t-heading: var(--c-ink);
+  --t-heading-rgb: var(--c-ink-rgb);
+  --t-muted: var(--paper-60);
+  --t-line: var(--paper-30);
+  --t-line-soft: var(--paper-20);
+  --t-btn-bg: var(--c-ink);
+  --t-btn-text: var(--c-paper);
+  --t-card-bg: rgba(var(--c-ink-rgb), 0.9);
+  --t-card-text: var(--c-paper);
+}
+.ui-steel {
+  --t-bg: var(--c-steel);
+  --t-bg-rgb: var(--c-steel-rgb);
+  --t-text: var(--c-paper);
+  --t-text-rgb: var(--c-paper-rgb);
+  --t-heading: var(--c-ink);
+  --t-heading-rgb: var(--c-ink-rgb);
+  --t-muted: var(--paper-60);
+  --t-line: var(--paper-30);
+  --t-line-soft: var(--paper-20);
+  --t-btn-bg: var(--c-ink);
+  --t-btn-text: var(--c-paper);
+  --t-card-bg: var(--c-paper);
+  --t-card-text: var(--c-ink);
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-ink) transparent;
+}
+
+html,
+body {
+  overscroll-behavior-y: none;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--t-bg);
+  color: var(--t-text);
+  font-family: var(--font-body), "Helvetica Neue", Arial, sans-serif;
+  font-size: calc(var(--scale-px) * 17);
+  /* follow.art HeadingNow metrics: line-height 1.25×, letter-spacing -0.03em */
+  line-height: 1.3;
+  letter-spacing: -0.03em;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--c-orange);
+  color: var(--c-paper);
+}
+
+:focus-visible {
+  outline: calc(var(--scale-px) * 2) solid var(--c-orange);
+  outline-offset: 3px;
+}
+
+/* webkit scrollbar */
+::-webkit-scrollbar {
+  width: calc(var(--scale-px) * 6);
+  height: calc(var(--scale-px) * 6);
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--c-ink);
+  border-radius: var(--radius-pill);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--c-orange);
+}
+
+/* ============================================================
+   TYPE — display faces act as architecture
+   ============================================================ */
+
+.font-display {
+  font-family: var(--font-hardbop), "Arial Narrow", sans-serif;
+  font-weight: 700;
+}
+
+.display-hero,
+.display-xl,
+.display-lg,
+.display-md,
+.display-sm {
+  font-family: var(--font-hardbop), "Arial Narrow", sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 0.8;
+  letter-spacing: 0;
+}
+
+.display-hero {
+  font-size: calc(var(--scale-px) * 235);
+}
+.display-xl {
+  font-size: calc(var(--scale-px) * 190);
+}
+.display-lg {
+  font-size: calc(var(--scale-px) * 120);
+}
+.display-md {
+  font-size: calc(var(--scale-px) * 72);
+}
+.display-sm {
+  font-size: calc(var(--scale-px) * 44);
+  line-height: 0.9;
+}
+
+.display-crop {
+  /* wordmark bleeding past section edges */
+  white-space: nowrap;
+  width: 106%;
+  margin-inline: -3%;
+}
+
+.label {
+  font-size: calc(var(--scale-px) * 12);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.underline-hand {
+  position: relative;
+  display: inline-block;
+}
+.underline-hand::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--scale-px) * -3);
+  height: calc(var(--scale-px) * 3);
+  background: var(--t-accent);
+  border-radius: var(--radius-pill);
+  transform: rotate(-1deg);
+}
+
+/* ============================================================
+   BUTTONS — follow.art .btn system: the hover effect is a hand-drawn
+   marker scribble (.btn__hover-accent) that snaps out behind the label
+   (opacity 0→1, scaleX .5→1, .3s cubic-bezier(.25,.74,.22,.99))
+   ============================================================ */
+
+.btn {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--scale-px) * 10);
+  min-height: calc(var(--scale-px) * 40);
+  padding: 0 calc(var(--scale-px) * 12);
+  background: transparent;
+  color: inherit;
+  font-family: var(--font-body), "Helvetica Neue", Arial, sans-serif;
+  font-size: calc(var(--scale-px) * 15);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  text-align: left;
+  text-decoration: none;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  transition: 0.3s cubic-bezier(0.25, 0.74, 0.22, 0.99);
+  transition-property: color, background-color, opacity;
+}
+
+/* follow.art trims each label to its cap height (text-box-trim with a
+   --fos/-.169em --foe/-.088em pseudo fallback) so labels sit optically
+   centered inside the button */
+@supports (text-box: trim-both cap alphabetic) {
+  .btn--link {
+    text-box: trim-both cap alphabetic;
+  }
+}
+
+/* the marker-stroke hover accent (SVG scribble injected by <HoverAccent/>)
+   — always black, per design decision */
+.btn__hover-accent {
+  color: var(--c-ink);
+  position: absolute;
+  top: 50%;
+  left: max(-13%, -14px);
+  height: 22px;
+  width: calc(100% + min(26%, 28px));
+  pointer-events: none;
+  opacity: 0;
+  transform: scaleX(0.5) translateY(-50%);
+  transform-origin: 0 50%;
+  z-index: 1;
+  transition: 0.3s cubic-bezier(0.25, 0.74, 0.22, 0.99);
+  transition-property: opacity, transform;
+}
+/* variant that sits behind the text instead of over it */
+.btn__hover-accent--text {
+  z-index: -1;
+  transform: scaleX(0.2312138728) translateY(-50%);
+}
+@media (hover: hover) and (pointer: fine) {
+  .btn:where(:not(:disabled)):hover .btn__hover-accent {
+    opacity: 1;
+    transform: scaleX(1) translateY(-50%);
+  }
+}
+.btn:focus-visible .btn__hover-accent {
+  opacity: 1;
+  transform: scaleX(1) translateY(-50%);
+}
+
+/* solid button (follow.art btn--primary): black pill/rect */
+.btn--pill,
+.btn--block {
+  background: var(--t-btn-bg);
+  color: var(--t-btn-text);
+}
+.btn--pill {
+  border-radius: var(--radius-pill);
+}
+.btn--block {
+  border-radius: 0;
+}
+
+/* text-only link button (follow.art btn--link): no box, just the scribble */
+.btn--link {
+  --btn-border-radius: 0;
+  padding: 0;
+  min-height: 0;
+  background: transparent;
+}
+
+/* current page (follow.art .btn.is-active): the scribble stays drawn; with
+   the always-black stroke the label knocks out white so it stays legible
+   on every section color */
+.btn.is-active {
+  color: var(--c-paper);
+}
+.btn.is-active .btn__hover-accent {
+  opacity: 1;
+  transform: scaleX(1) translateY(-50%);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ghost/outline button */
+.btn--outline {
+  background: transparent;
+  color: var(--t-heading);
+  box-shadow: inset 0 0 0 1px var(--t-line);
+}
+.btn--outline:hover {
+  color: var(--t-bg);
+}
+
+/* ============================================================
+   SECTION SCAFFOLD
+   ============================================================ */
+
+.sheet {
+  position: relative;
+  background: var(--t-bg);
+  color: var(--t-text);
+  /* follow.art page gutter (px-1): one --page-spacing on each side */
+  padding-inline: var(--page-spacing);
+}
+
+/* tilted sheet edge — incoming section overlaps the previous one */
+.sheet--tilt-top {
+  margin-top: calc(var(--scale-px) * -56);
+  transform: rotate(-1.4deg) scale(1.02);
+  transform-origin: top left;
+  z-index: 1;
+}
+.sheet--tilt-top-r {
+  margin-top: calc(var(--scale-px) * -56);
+  transform: rotate(1.2deg) scale(1.02);
+  transform-origin: top right;
+  z-index: 1;
+}
+
+.hairline {
+  border-top: 1px solid var(--t-line);
+}
+
+/* follow.art hairlines: hr default + the fixed header's bottom line,
+   which draws itself in (scaleX 0→1, 1.5s cubic-bezier(.55,0,.1,1)) */
+hr {
+  border: 0;
+  border-top: 1px solid var(--t-line);
+}
+
+.promo-hairline {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  border-bottom: 1px solid var(--t-line);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 1.5s cubic-bezier(0.55, 0, 0.1, 1);
+}
+.promo-hairline--shown {
+  transform: scaleX(1);
+}
+
+/* ============================================================
+   PROMO HEADER — verbatim port of follow.art's .promo-header
+   classes so the bar's size matches the original exactly
+   ============================================================ */
+
+/* follow.art --scale-text-rem (fluid type scale, 1rem at 1440w) */
+:root {
+  --scale-text-rem: clamp(0.7rem, calc(0.7rem + 0.41667vw - 3px), 1rem);
+}
+
+.promo-header {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  z-index: 10;
+}
+
+.promo-header__previous-bg {
+  position: absolute;
+  inset: 0;
+  transition: background 0.4s ease;
+}
+
+.promo-header__row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: calc(var(--scale-px) * 60); /* --promo-header-height (md) */
+  padding: var(--page-spacing) 0;
+  transition: transform 1.5s cubic-bezier(0.55, 0, 0.1, 1);
+}
+@media (max-width: 979px) {
+  .promo-header__row {
+    height: calc(var(--scale-px) * 40); /* --promo-header-height (n-md) */
+    padding: calc(var(--scale-px) * 10) 0;
+  }
+}
+
+.promo-header__logo {
+  position: relative;
+}
+
+.promo-header__desktop-links {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--page-spacing) * 2); /* follow.art: --spacing*2 */
+}
+
+.promo-header__content-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* follow.art .btn--text-smaller: 1.3× scale-text-rem desktop, 1.2× mobile */
+.btn--text-smaller {
+  font-family: var(--font-body), Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  font-size: calc(var(--scale-text-rem) * 1.3);
+  line-height: calc(var(--scale-text-rem) * 1.6);
+  letter-spacing: -0.03em;
+  text-transform: none;
+}
+@media (max-width: 979px) {
+  .btn--text-smaller {
+    font-size: calc(var(--scale-text-rem) * 1.2);
+  }
+}
+
+.promo-header__animated-button {
+  transition: font-size 1.5s cubic-bezier(0.55, 0, 0.1, 1);
+}
+
+/* editorial two-column: label left / content right */
+.ed {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(var(--scale-px) * 40);
+}
+
+/* follow.art .col-divider__right — vertical t-line rule between columns */
+.col-divider {
+  position: relative;
+}
+.col-divider::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--scale-px) * -20);
+  top: 0;
+  bottom: 0;
+  border-left: 1px solid var(--t-line);
+}
+/* follow.art .col-divider__right — vertical t-line rule between columns;
+   auto-drawn on the right column of every .ed two-column block */
+.ed > :nth-child(2) {
+  position: relative;
+}
+.ed > :nth-child(2)::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--scale-px) * -20);
+  top: 0;
+  bottom: 0;
+  border-left: 1px solid var(--t-line);
+}
+@media (max-width: 820px) {
+  .ed {
+    grid-template-columns: 1fr;
+    gap: calc(var(--scale-px) * 20);
+  }
+  .ed .col-divider::before,
+  .ed > :nth-child(2)::before {
+    display: none;
+  }
+}
+
+/* ============================================================
+   KEYFRAMES
+   ============================================================ */
+
+@keyframes marquee-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(calc(var(--scale-px) * -8));
+  }
+}
+
+@keyframes loader-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+
+/* intro loader doodles — each blinks ~150ms, staggered 300ms apart,
+   so exactly one doodle is visible at a time (FOLLOW.ART port) */
+@keyframes changing-elements {
+  0% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  20% {
+    opacity: 0;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.intro-doodle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  height: auto;
+  opacity: 0;
+  animation: changing-elements 1.5s linear infinite;
+}
+
+/* hero wordmark — FOLLOW.ART .title pattern: the SVG spans the full
+   content width and each letter path scales about the viewBox top
+   (transform-box defaults to view-box, so 50% 0 is the top edge) */
+.hero-word-svg {
+  width: 100%;
+  height: auto;
+}
+
+.hero-word-svg path {
+  transform-origin: 50% 0;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-x var(--marquee-period, 36s) linear infinite;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* ============================================================
+   REDUCED MOTION — the accessibility layer follow.art skipped
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .marquee-track {
+    animation: none;
+  }
+}
+
+/* lenis recommended styles */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
 }
