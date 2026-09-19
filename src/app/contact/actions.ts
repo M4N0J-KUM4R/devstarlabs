@@ -35,7 +35,7 @@ export async function submitContact(
       const resend = new Resend(apiKey);
       await resend.emails.send({
         from: "DevStarLabs <onboarding@resend.dev>",
-        to: process.env.CONTACT_TO ?? "hello@devstarlabs.dev",
+        to: process.env.CONTACT_TO ?? "manoj@devstarlabs.cloud",
         replyTo: email,
         subject: `[${topic}] ${name} — devstarlabs.dev contact`,
         text: `${name} <${email}>\n\n${message}`,
@@ -47,7 +47,7 @@ export async function submitContact(
     } catch {
       return {
         ok: false,
-        message: "Something broke on our side — email hello@devstarlabs.dev directly.",
+        message: "Something broke on our side — email manoj@devstarlabs.cloud directly.",
       };
     }
   }

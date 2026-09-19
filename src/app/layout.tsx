@@ -4,6 +4,7 @@ import "./globals.css";
 import SmoothScroll from "@/components/system/SmoothScroll";
 import SiteHeader from "@/components/layout/SiteHeader";
 import SiteFooter from "@/components/layout/SiteFooter";
+import RouteLoader from "@/components/system/RouteLoader";
 
 // The two faces follow.art runs — Hardbop Bold for display headings,
 // HeadingNow 73 Book for body/UI text (self-hosted woff2 in /public/fonts).
@@ -121,6 +122,7 @@ export default function RootLayout({
           <main id="main">{children}</main>
           <SiteFooter />
         </SmoothScroll>
+        <RouteLoader />
       </body>
     </html>
   );

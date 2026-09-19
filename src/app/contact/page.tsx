@@ -34,10 +34,10 @@ export default function ContactPage() {
             <div>
               <h2 className="label mb-4 text-[var(--t-muted)]">Direct</h2>
               <a
-                href="mailto:hello@devstarlabs.dev"
+                href="mailto:manoj@devstarlabs.cloud"
                 className="text-xl underline-hand"
               >
-                hello@devstarlabs.dev
+                manoj@devstarlabs.cloud
               </a>
             </div>
             <div>

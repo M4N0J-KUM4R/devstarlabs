@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Doodle from "@/components/system/Doodle";
 import HoverAccent from "@/components/system/HoverAccent";
+import HeroCardCarousel from "@/components/webgl/HeroCardCarousel";
 import { HERO_WORD, HERO_WORD_MOBILE } from "@/data/heroWord";
 
 /* Motion constants lifted from FOLLOW.ART's production TitleAnimation
@@ -42,11 +43,9 @@ export default function HeroSection() {
       window.setTimeout(() => setShowWord(true), 60);
       return;
     }
-    try {
-      sessionStorage.setItem(INTRO_SEEN_KEY, "1");
-    } catch {
-      /* ignore */
-    }
+    /* flag is written when the intro finishes, not on start — Strict
+       Mode's double effect run would otherwise play, clean up, then
+       skip on the re-run because the flag was already set */
     document.documentElement.style.overflow = "hidden";
     const timers = [
       window.setTimeout(() => {
@@ -55,6 +54,11 @@ export default function HeroSection() {
       }, LOADING_MS),
       window.setTimeout(
         () => {
+          try {
+            sessionStorage.setItem(INTRO_SEEN_KEY, "1");
+          } catch {
+            /* ignore */
+          }
           setLoader("off");
           document.documentElement.style.overflow = "";
         },
@@ -182,11 +186,23 @@ export default function HeroSection() {
      position:relative would override the sticky utility. */
   return (
     <div className="relative -mb-[100svh]">
-      <div className="sticky top-0 min-h-[100svh]">
-        <section className="ui-orange sheet flex min-h-[100svh] flex-col overflow-hidden">
+      {/* sticky creates a stacking context, so the loader-covering z lift
+          must sit HERE to outrank the fixed header's z-index:10 */}
+      <div
+        className={`sticky top-0 min-h-[100svh] ${
+          loader !== "off" ? "z-[60]" : ""
+        }`}
+      >
+        {/* while the intro loader is up, the section paints above the
+            header so the loading screen covers the chrome too */}
+        <section className="ui-orange sheet isolate flex min-h-[100svh] flex-col overflow-hidden">
           <h1 className="sr-only">
             DevStarLabs — software studio and certification training lab
           </h1>
+
+          {/* rotating card carousel — two stacked WebGL scenes: the back
+              half renders under the wordmark, the front half over it */}
+          <HeroCardCarousel show={showWord} />
 
           {/* interactive wordmark — one hand-set SVG, FOLLOW.ART .title pattern */}
           <div
@@ -261,9 +277,6 @@ export default function HeroSection() {
                 />
               </p>
             </div>
-            <p className="label hidden self-center pb-3 opacity-60 md:block">
-              Move your cursor
-            </p>
             <Link
               href="/contact"
               className="btn btn--accent btn--block flex w-full items-center justify-between rounded-none px-7 py-6 text-lg md:w-auto md:gap-16 md:!px-10"
@@ -302,8 +315,11 @@ export default function HeroSection() {
         </section>
       </div>
 
-      {/* the 100svh the hero stays pinned through while the next sheet covers it */}
-      <div aria-hidden="true" className="h-[100svh]" />
+      {/* the scroll the hero stays pinned through while the next sheet
+          covers it. The extra 96px pays for the incoming sheet's tilt-top
+          (its -56px pull-in plus the rotation rise) so its edge rests just
+          BELOW the fold at scroll 0 instead of peeking over the hero. */}
+      <div aria-hidden="true" className="h-[calc(100svh_+_var(--scale-px)*96)]" />
     </div>
   );
 }

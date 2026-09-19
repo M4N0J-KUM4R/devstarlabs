@@ -67,11 +67,11 @@ export default function SiteFooter() {
         <div>
           <p className="label mb-4 text-[var(--t-muted)]">Reach us</p>
           <a
-            href="mailto:hello@devstarlabs.dev"
+            href="mailto:manoj@devstarlabs.cloud"
             className="text-sm no-underline underline-hand"
             style={{ color: "var(--t-text)" }}
           >
-            hello@devstarlabs.dev
+            manoj@devstarlabs.cloud
           </a>
           <div className="mt-6 flex gap-3">
             {["LinkedIn", "GitHub", "YouTube", "X"].map((s) => (
