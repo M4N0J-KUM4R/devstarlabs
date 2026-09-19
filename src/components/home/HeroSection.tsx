@@ -1,9 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Doodle from "@/components/system/Doodle";
-import HoverAccent from "@/components/system/HoverAccent";
 import HeroCardCarousel from "@/components/webgl/HeroCardCarousel";
 import { HERO_WORD, HERO_WORD_MOBILE } from "@/data/heroWord";
 
@@ -208,7 +206,7 @@ export default function HeroSection() {
           <div
             ref={wordRef}
             aria-hidden="true"
-            className="select-none pt-[calc(var(--scale-px)*110)] lg:pt-[calc(var(--scale-px)*60)]"
+            className="relative select-none pt-[calc(var(--scale-px)*110)] lg:pt-[calc(var(--scale-px)*60)]"
           >
             <svg
               className="hero-word-svg hidden lg:block transition-transform duration-[1500ms] [transition-timing-function:cubic-bezier(.55,0,.1,1)]"
@@ -254,11 +252,21 @@ export default function HeroSection() {
                 </g>
               ))}
             </svg>
+
+            {/* title decoration — scratchy marker slash across the word
+                (follow.art intro__title-decoration), fades in with it */}
+            <Doodle
+              name="slash"
+              className={`pointer-events-none absolute left-[50%] top-[70%] w-[30%] text-[var(--c-ink)] transition-opacity delay-300 duration-[1500ms] [transition-timing-function:cubic-bezier(.55,0,.1,1)] ${
+                showWord ? "opacity-90" : "opacity-0"
+              }`}
+            />
           </div>
 
-          {/* value prop — slides up into place with the word (intro__footer) */}
+          {/* value prop — slides up into place with the word (intro__footer);
+              the bottom padding clears the fixed Join bar pinned over it */}
           <div
-            className="relative z-10 mt-auto flex flex-col gap-4 pb-[calc(var(--scale-px)*30)] pt-4 transition-transform duration-[1500ms] [transition-timing-function:cubic-bezier(.55,0,.1,1)] md:flex-row md:items-end md:justify-between"
+            className="relative z-10 mt-auto flex flex-col gap-4 pb-24 pt-4 transition-transform duration-[1500ms] [transition-timing-function:cubic-bezier(.55,0,.1,1)] md:flex-row md:items-end md:justify-between md:pb-[calc(var(--scale-px)*104)]"
             style={{
               transform: showWord ? "translateY(0)" : "translateY(120%)",
             }}
@@ -272,19 +280,11 @@ export default function HeroSection() {
               <p className="mt-3 flex items-center gap-2 font-medium text-[var(--t-text)]">
                 Services for your product. Training for your team.
                 <Doodle
-                  name="arrow"
-                  className="w-8 rotate-[30deg] text-[var(--t-text)]"
+                  name="curved-arrow"
+                  className="hidden w-[14px] shrink-0 text-[var(--t-text)] md:block"
                 />
               </p>
             </div>
-            <Link
-              href="/contact"
-              className="btn btn--accent btn--block flex w-full items-center justify-between rounded-none px-7 py-6 text-lg md:w-auto md:gap-16 md:!px-10"
-            >
-              Start a project
-              <span aria-hidden="true">→</span>
-              <HoverAccent />
-            </Link>
           </div>
 
           {/* intro loader — orange overlay with blinking hand-drawn doodles */}

@@ -354,6 +354,14 @@ body {
   transform: scaleX(1) translateY(-50%);
 }
 
+/* fixed join bar (fixed-sign-up-button): not a .btn, so it carries its
+   own hover/focus reveal — the scribble snaps out in the accent orange */
+.fixed-join-bar:hover .btn__hover-accent,
+.fixed-join-bar:focus-visible .btn__hover-accent {
+  opacity: 1;
+  transform: scaleX(1) translateY(-50%);
+}
+
 /* solid button (follow.art btn--primary): black pill/rect */
 .btn--pill,
 .btn--block {

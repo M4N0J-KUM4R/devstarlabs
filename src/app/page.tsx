@@ -7,6 +7,7 @@ import Certifications from "@/components/home/Certifications";
 import Testimonials from "@/components/home/Testimonials";
 import Lab from "@/components/home/Lab";
 import CtaSection from "@/components/home/CtaSection";
+import FixedJoinButton from "@/components/system/FixedJoinButton";
 
 export const metadata: Metadata = {
   title: "DevStarLabs | Software Studio & Certification Training",
@@ -26,6 +27,7 @@ export default function HomePage() {
       <Testimonials />
       <Lab />
       <CtaSection />
+      <FixedJoinButton />
     </>
   );
 }

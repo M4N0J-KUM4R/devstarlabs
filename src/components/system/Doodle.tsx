@@ -1,6 +1,15 @@
 import type { CSSProperties } from "react";
 
-type DoodleName = "star" | "ring" | "arrow" | "spark" | "squiggle" | "cross";
+type DoodleName =
+  | "star"
+  | "ring"
+  | "arrow"
+  | "spark"
+  | "squiggle"
+  | "cross"
+  | "slash"
+  | "curved-arrow"
+  | "circle-arrow";
 
 const PATHS: Record<DoodleName, React.ReactNode> = {
   star: (
@@ -71,6 +80,70 @@ const PATHS: Record<DoodleName, React.ReactNode> = {
       />
     </>
   ),
+  /* scratchy marker slash (follow.art intro__title-decoration look) */
+  slash: (
+    <>
+      <path
+        d="M6 4 C48 22 108 62 166 118"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <path
+        d="M12 8 C34 20 58 38 78 56"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        fill="none"
+        opacity="0.6"
+      />
+      <path
+        d="M46 27 C88 45 138 82 174 121"
+        stroke="currentColor"
+        strokeWidth="5"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <path
+        d="M60 30 C100 50 146 86 180 122"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        fill="none"
+        opacity="0.75"
+      />
+      <path
+        d="M55 39 C95 58 140 92 176 127"
+        stroke="currentColor"
+        strokeWidth="6.5"
+        strokeLinecap="round"
+        fill="none"
+      />
+    </>
+  ),
+  /* small hook arrow curving down (follow.art promo-next look) */
+  "curved-arrow": (
+    <path
+      d="M21 31 L29 21 M21 31 L13 21 M21 31 V21 C21 10.5 13.5 2 2 2"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      fill="none"
+    />
+  ),
+  /* circle with a right arrow through it (follow.art step-next look) */
+  "circle-arrow": (
+    <path
+      d="M1 9a8 8 0 1 0 16 0 8 8 0 0 0-16 0ZM2.5 9H14M14 9 9.5 4.5M14 9l-4.5 4.5"
+      stroke="currentColor"
+      strokeWidth="1.4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      fill="none"
+    />
+  ),
 };
 
 /**
@@ -88,10 +161,20 @@ export default function Doodle({
   style?: CSSProperties;
   rotate?: number;
 }) {
-  const viewBox = name === "cross" ? "0 0 96 92" : name === "ring" || name === "arrow" ? "0 0 90 60" : name === "squiggle" ? "0 0 112 32" : "0 0 64 60";
+  const VIEWBOXES: Record<DoodleName, string> = {
+    star: "0 0 64 60",
+    spark: "0 0 64 60",
+    ring: "0 0 90 60",
+    arrow: "0 0 90 60",
+    squiggle: "0 0 112 32",
+    cross: "0 0 96 92",
+    slash: "0 0 220 150",
+    "curved-arrow": "0 0 31 33",
+    "circle-arrow": "0 0 18 18",
+  };
   return (
     <svg
-      viewBox={viewBox}
+      viewBox={VIEWBOXES[name]}
       aria-hidden="true"
       focusable="false"
       className={className}
