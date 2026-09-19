@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Doodle from "@/components/system/Doodle";
+import LogoMark from "@/components/system/LogoMark";
 import { SERVICES, TRAININGS } from "@/data/content";
 
 export default function SiteFooter() {
@@ -13,7 +14,12 @@ export default function SiteFooter() {
             className="font-display text-2xl uppercase no-underline"
             style={{ color: "var(--t-heading)" }}
           >
-            DEV<span className="text-[var(--c-orange)]">★</span>STAR.LABS
+            DEV
+            <LogoMark
+              idPrefix="ftr"
+              className="mx-1.5 inline-block h-[1em] w-auto align-[-0.1em]"
+            />
+            LABS
           </Link>
           <p className="mt-4 max-w-xs text-sm text-[var(--t-muted)]">
             A software studio and training lab. We build digital products and

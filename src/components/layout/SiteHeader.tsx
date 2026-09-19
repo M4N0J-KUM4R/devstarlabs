@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { gsap } from "gsap";
 import Doodle from "@/components/system/Doodle";
 import HoverAccent from "@/components/system/HoverAccent";
+import LogoMark from "@/components/system/LogoMark";
 
 // follow.art's promo-header items, in its order. Hrefs marked TODO are
 // placeholders — placement of our existing pages comes from the user.
@@ -175,19 +176,11 @@ export default function SiteHeader() {
             aria-label="DevStarLabs home"
           >
             DEV
-            <svg
-              viewBox="0 0 64 60"
-              className="mx-0.5 inline-block h-[0.85em] w-auto"
-              aria-hidden="true"
-            >
-              <path
-                d="M32 2 C34 14 36 18 46 20 C36 23 34 27 32 40 C30 27 28 23 18 20 C28 18 30 14 32 2 Z"
-                fill="var(--c-orange)"
-                stroke={headColor}
-                strokeWidth="3"
-              />
-            </svg>
-            STAR.LABS
+            <LogoMark
+              idPrefix="hdr"
+              className="mx-1.5 inline-block h-[1.05em] w-auto align-[-0.12em]"
+            />
+            LABS
             <HoverAccent />
           </Link>
         </div>
