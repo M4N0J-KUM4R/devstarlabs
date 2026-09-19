@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import {
+  CanvasTexture,
   ClampToEdgeWrapping,
   Color,
   Curve,
@@ -18,22 +19,34 @@ import {
   Scene,
   SRGBColorSpace,
   SkinnedMesh,
-  TextureLoader,
   Vector3,
   WebGLRenderer,
 } from "three";
+import { CARDS } from "@/data/cards";
+import {
+  CARD_REF_H,
+  CARD_REF_W,
+  drawCardFace,
+  loadCardMedia,
+  siteCardFonts,
+  type CardData,
+} from "@/components/webgl/cardTemplate";
 
 /* =====================================================================
    Hero card carousel — a port of follow.art's "Landing1IntroWebGl"
-   (three.js Flow spine-bend). Nine card planes ride a horizontal ring
+   (three.js Flow spine-bend). The card planes ride a horizontal ring
    (r=15) while the camera carries a cursor-driven tilt. Two stacked
    canvases create the depth trick around the DOM wordmark:
 
-     - FRONT canvas (z-index 2, over the word): the 9 TEXTURED cards,
+     - FRONT canvas (z-index 2, over the word): the TEXTURED cards,
        camera far = 69 -> only the near half of the ring renders.
-     - BACK canvas (z-index -1, under the word): the same 9 cards with
+     - BACK canvas (z-index -1, under the word): the same cards with
        a flat accent material, camera near = 69 / far = 200 -> the far
        half slides behind the title.
+
+   Card faces are drawn at runtime by the shared template
+   (components/webgl/cardTemplate.ts) from the entries in
+   data/cards.ts — add an entry there and it rides the ring.
 
    Both cameras: fov 28 (contain-fitted), position (0,-14,-70),
    rotation (-192deg, 0, -25deg). Path speed: dt * -5e-5 -> ~20s per
@@ -343,9 +356,43 @@ function build(wrapper: HTMLElement, reduceMotion: boolean) {
   const frontFlows: Flow[] = [];
   const backFlows: Flow[] = [];
   const frontMats: MeshBasicMaterial[] = [];
-  const textures = new TextureLoader();
 
-  for (let i = 0; i < 9; i++) {
+  /* The ring always shows at most RING_SLOTS cards. Extra entries wait
+     on a bench and baton-pass onto the ring at the edge-on phase. */
+  const RING_SLOTS = 9;
+  const slotCount = Math.min(CARDS.length, RING_SLOTS);
+  /* Exact edge-on phase. Derivation: card center's curve parameter is
+     pathOffset + spineOffset/ringLength = pathOffset + 161/94.25 ≈
+     pathOffset + 0.708 (mod 1); the camera (z = -70) faces ring point
+     t = 0.75, so the front-facing card sits at pathOffset ≈ 0.042 and
+     the edge-on points — where the card is perpendicular to the camera
+     and a face swap is invisible — are 0.2917 (entering the front pass)
+     and 0.7917 (leaving it). Swaps fire at the entering edge. */
+  const EDGE_PHASE = 0.2917;
+
+  /* portraits are shared across slots — load each URL once */
+  const mediaCache = new Map<string, Promise<HTMLImageElement>>();
+  const getMedia = (src: string) => {
+    let p = mediaCache.get(src);
+    if (!p) {
+      p = loadCardMedia(src);
+      mediaCache.set(src, p);
+    }
+    return p;
+  };
+
+  type Slot = {
+    ctx: CanvasRenderingContext2D;
+    tex: CanvasTexture;
+    card: CardData;
+    /** unwrapped ring phase; a drop in floor(phase - EDGE_PHASE) is the
+       edge-on instant where this slot swaps faces */
+    phase: number;
+    redraw: (card: CardData) => void;
+  };
+  const slots: Slot[] = [];
+
+  for (let i = 0; i < slotCount; i++) {
     const mat = new MeshBasicMaterial({ side: DoubleSide });
 
     /* PlaneGeometry(9, 12.6, 10, 1) — a FLAT sheet with 10 width segments
@@ -363,30 +410,66 @@ function build(wrapper: HTMLElement, reduceMotion: boolean) {
        actually in the scene graph, not the prototype material above. */
     const sceneMat = (ff.object3D as Mesh).material as MeshBasicMaterial;
     frontMats.push(sceneMat);
-    textures.load(
-      `/cards/card-${i + 1}.png`,
-      (tex) => {
-        tex.colorSpace = SRGBColorSpace;
-        sceneMat.map = tex;
-        sceneMat.needsUpdate = true;
+
+    /* Face drawn by the shared template at 2× (1400×2160). */
+    const face = document.createElement("canvas");
+    face.width = CARD_REF_W * 2;
+    face.height = CARD_REF_H * 2;
+    const ctx2d = face.getContext("2d")!;
+    const tex = new CanvasTexture(face);
+    tex.colorSpace = SRGBColorSpace;
+    tex.anisotropy = 4;
+
+    const slot: Slot = {
+      ctx: ctx2d,
+      tex,
+      card: CARDS[i],
+      phase: i / slotCount,
+      redraw: (card: CardData) => {
+        slot.card = card;
+        const paint = (media: HTMLImageElement | null) => {
+          drawCardFace(slot.ctx, card, { media, ...siteCardFonts() });
+          slot.tex.needsUpdate = true;
+        };
+        paint(null);
+        document.fonts.ready.then(() => {
+          if (slot.card === card) paint(null);
+        });
+        if (card.media) {
+          getMedia(card.media)
+            .then((img) => {
+              if (slot.card === card) paint(img);
+            })
+            .catch(() => {
+              /* keep the placeholder frame */
+            });
+        }
       },
-      undefined,
-      () => {
-        /* texture missing — fall back to the flat accent face */
-        sceneMat.color = new Color("#B05A2E");
-      },
-    );
+    };
+    slots.push(slot);
+    slot.redraw(CARDS[i]);
+    sceneMat.map = tex;
+    sceneMat.needsUpdate = true;
 
     ff.updateCurve(0, ring);
     bf.updateCurve(0, ring);
-    ff.moveAlongCurve(i / 9);
-    bf.moveAlongCurve(i / 9);
+    ff.moveAlongCurve(i / slotCount);
+    bf.moveAlongCurve(i / slotCount);
 
     front.scene.add(ff.object3D);
     back.scene.add(bf.object3D);
     frontFlows.push(ff);
     backFlows.push(bf);
   }
+
+  /* more cards than slots: the extra card waits on an off-ring bench.
+     The moment a slot reaches the edge-on phase it pulls the benched
+     card in and its own card takes the bench — one card changes at a
+     time, always at the invisible rotation edge, and the ring never
+     shows duplicates. */
+  const swapAtEdge = CARDS.length > slotCount;
+  let ringMotion = 0;
+  let offDeck: CardData | null = swapAtEdge ? CARDS[slotCount] : null;
 
   /* ---------------- the exact mouse tracker semantics ------------------- */
   let mouseX = 0.5;
@@ -448,6 +531,21 @@ function build(wrapper: HTMLElement, reduceMotion: boolean) {
       const d = dt * -5e-5; /* their card speed: ~20s per revolution */
       for (const f of frontFlows) f.moveAlongCurve(d);
       for (const f of backFlows) f.moveAlongCurve(d);
+      if (swapAtEdge && offDeck) {
+        ringMotion += d;
+        for (let i = 0; i < slots.length; i++) {
+          const s = slots[i];
+          const u = i / slotCount + ringMotion;
+          /* floor(u - EDGE_PHASE) drops by one each time the slot passes
+             the edge-on phase moving backward along the ring */
+          if (Math.floor(s.phase - EDGE_PHASE) > Math.floor(u - EDGE_PHASE)) {
+            const vacated = s.card;
+            s.redraw(offDeck);
+            offDeck = vacated;
+          }
+          s.phase = u;
+        }
+      }
     }
 
     /* their uf() lerp: 0.05 per 16ms, snap at 1/2500 */

@@ -119,7 +119,12 @@ export default function RootLayout({
         />
         <SmoothScroll>
           <SiteHeader />
-          <main id="main">{children}</main>
+          {/* overflow-x-clip: the tilted .sheet--tilt-top sections rotate
+              past the viewport edge by design; clip (unlike hidden) keeps
+              sticky sections working while killing the horizontal scroll. */}
+          <main id="main" className="overflow-x-clip">
+            {children}
+          </main>
           <SiteFooter />
         </SmoothScroll>
         <RouteLoader />
