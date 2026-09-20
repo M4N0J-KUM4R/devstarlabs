@@ -1,31 +1,37 @@
 "use client";
 
-import ThemeSection from "@/components/system/ThemeSection";
-import Doodle from "@/components/system/Doodle";
 import TestimonialCarousel from "@/components/webgl/TestimonialCarousel";
+import { S9_HEAD_HTML } from "@/components/sections/rawSections";
 
-/**
- * "Said about" — the WebGL review rail. Eight review cards ride a
- * bent-cylinder track (the follow.art Landing9 construction): drag
- * with inertia, snap to the nearest card, or step with the Prev/Next
- * buttons. All the WebGL lives in TestimonialCarousel.
- */
+/* follow.art section-9 (Testimonials) in its original Section/Sticky
+   scaffold — the wordart header is the reference markup, the cards are
+   the repo's ported WebGL review carousel (drag + inertia + snap, the
+   Landing9 construction). The layer pins by its bottom edge while the
+   next sheet sweeps over it (data-sticky-bottom, engine-driven). */
 export default function Testimonials() {
   return (
-    <ThemeSection theme="steel" motion="sweep" contentClassName="overflow-hidden pb-24 pt-28">
-      <div className="relative select-none" aria-hidden="true">
-        <p className="display-xl display-crop text-[var(--t-heading)] opacity-90">
-          Said about
-        </p>
+    <section
+      className="landing-section ui-blue"
+      data-page-header-theme="blue"
+      style={{ position: "relative", zIndex: 1 }}
+    >
+      <div className="section section--under-next">
+        <div
+          className="section__layer section__layer--sticky ui-background"
+          data-sticky-bottom
+        >
+          <div className="section-9 pb-1 pt-promo-header">
+            <div dangerouslySetInnerHTML={{ __html: S9_HEAD_HTML }} />
+            <div className="section-9__cards">
+              <TestimonialCarousel />
+            </div>
+            <div
+              className="fixed-sign-up-button-stub mt-3 is-hidden:md-up"
+              aria-hidden="true"
+            />
+          </div>
+        </div>
       </div>
-      <h2 className="sr-only">Testimonials</h2>
-      <Doodle
-        name="ring"
-        className="pointer-events-none absolute left-[6%] top-24 w-28 text-[var(--c-paper)]"
-        rotate={-8}
-      />
-
-      <TestimonialCarousel />
-    </ThemeSection>
+    </section>
   );
 }

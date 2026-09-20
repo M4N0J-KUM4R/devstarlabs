@@ -28,10 +28,14 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
       wheelMultiplier: 1,
     });
 
+    /* test hook: lets tooling scroll past Lenis (window.__lenis.scrollTo) */
+    (window as unknown as { __lenis?: Lenis }).__lenis = lenis;
+
     lenis.on("scroll", ScrollTrigger.update);
 
     return () => {
       lenis.destroy();
+      delete (window as unknown as { __lenis?: Lenis }).__lenis;
     };
   }, []);
 

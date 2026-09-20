@@ -1,5 +1,6 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import ThemeSection from "@/components/system/ThemeSection";
 
 interface FeatureCard {
@@ -15,42 +16,50 @@ const CARDS: FeatureCard[] = [
   {
     number: "1",
     front: {
-      line1: "Unified",
-      line2: "Design System",
+      line1: "Professional",
+      line2: "presentation",
     },
-    back: "Tokens mapped 1:1 from Figma into Tailwind, React 19, and native mobile components.",
+    back: "Portfolio, biography, experience, links and contacts in one place.",
   },
   {
     number: "2",
     front: {
-      line1: "Monorepo &",
-      line2: "Type-Safe APIs",
+      line1: "Financial",
+      line2: "support",
     },
-    back: "Strictly typed schemas shared across web frontends, microservices, and mobile.",
+    back: "Let people financially support your practice, instantly.",
   },
   {
     number: "3",
     front: {
-      line1: "Cloud & GitOps",
-      line2: "Infrastructure",
+      line1: "Instant",
+      line2: "sharing",
     },
-    back: "Multi-region AWS/GCP clusters, Terraform IaC, automated canary rollouts & 99.99% SLA.",
+    back: "Use a link, QR code or Wallet pass during events and meetings.",
   },
   {
     number: "4",
     front: {
-      line1: "Autonomous",
-      line2: "AI Pipelines",
+      line1: "Better",
+      line2: "discovery",
     },
-    back: "Enterprise LLM agent swarms, vector retrieval, and self-evaluating workflows.",
+    back: "Be searchable through Connectory without algorithms or closed circles.",
   },
 ];
 
-export default function Centralize() {
+export default function Centralize({
+  style,
+}: {
+  /* the sweep sheet's default -100svh pull is cancelled by the home
+     stack composition — the raw section-5's under-next reserve already
+     provides the overlap */
+  style?: CSSProperties;
+}) {
   return (
     <ThemeSection
       theme="sage"
       motion="sweep"
+      style={style}
       contentClassName="pb-28 pt-24 md:pt-32"
     >
       <div className="section-4">
@@ -75,10 +84,10 @@ export default function Centralize() {
               <span className="underline-hand">
                 No more
               </span>{" "}
-              scattered links, repositories, and fragmented agency teams.
+              scattered links, PDFs, and half-finished profiles.
               <br />
               <br />
-              Have your entire product ecosystem together in one cohesive, high-performance architecture.
+              Have your work together in one clear format.
             </p>
           </div>
         </div>
