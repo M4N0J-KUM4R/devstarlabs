@@ -64,7 +64,7 @@ export default function AboutStory() {
 
           <div className="mt-8 flex flex-wrap items-center gap-6 pt-4">
             <FillButton href="/about">Read our full story</FillButton>
-            <div className="inline-block border border-[var(--t-line)] px-4 py-2 leading-tight rounded-xl">
+            <div className="frame-line inline-block px-4 py-2 leading-tight">
               <span className="label block text-[10px] opacity-80 text-[var(--t-text)]">Client Rating</span>
               <span className="font-display block text-2xl text-[var(--t-heading)]">4.9 / 5</span>
               <span className="label block text-[10px] opacity-80 text-[var(--t-text)]">140+ Deployments</span>

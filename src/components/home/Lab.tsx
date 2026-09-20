@@ -14,7 +14,7 @@ export default function Lab() {
         <div className="relative">
           {/* tilted "lab console" card drawn in CSS */}
           <div
-            className="w-[min(80vw,420px)] rounded-2xl p-6"
+            className="w-[min(80vw,420px)] frame-line p-6"
             style={{
               background: "rgba(var(--c-paper-rgb),0.05)",
               border: "1px solid var(--t-line)",
@@ -25,7 +25,7 @@ export default function Lab() {
             <div className="flex items-center justify-between">
               <span className="label opacity-60">Lab cluster · live</span>
               <span
-                className="h-2.5 w-2.5 rounded-full"
+                className="h-2.5 w-2.5"
                 style={{ background: "var(--c-orange)", animation: "loader-blink 1.6s infinite" }}
               />
             </div>
@@ -40,7 +40,7 @@ export default function Lab() {
               {["AWS", "K8s", "Terraform", "LLM"].map((c) => (
                 <span
                   key={c}
-                  className="rounded-full px-3 py-1 text-[10px] font-bold uppercase"
+                  className="px-3 py-1 text-[10px] font-bold uppercase"
                   style={{ background: "rgba(var(--c-orange-rgb),0.15)", color: "var(--c-orange)" }}
                 >
                   {c}

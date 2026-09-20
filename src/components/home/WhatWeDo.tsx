@@ -34,7 +34,7 @@ export default function WhatWeDo() {
           {SERVICES.map((s, i) => (
             <Link
               key={s.slug}
-              href={`/services#${s.slug}`}
+              href={`#${s.slug}`}
               className="hairline group flex items-baseline justify-between gap-6 py-6 no-underline transition-transform hover:-translate-x-1"
             >
               <span className="flex items-baseline gap-5">
@@ -60,7 +60,7 @@ export default function WhatWeDo() {
             </p>
           </div>
           <Link
-            href="/services"
+            href="/our-product"
             className="font-display text-base uppercase tracking-wider text-[var(--t-heading)] hover:text-[var(--c-orange)] transition-colors"
           >
             Explore all capabilities →

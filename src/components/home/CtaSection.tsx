@@ -21,7 +21,7 @@ export default function CtaSection() {
             with a 30-minute call.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-8">
-            <FillButton href="/contact">Book a call</FillButton>
+            <FillButton href="/signup">Book a call</FillButton>
             <Doodle
               name="arrow"
               className="w-20 text-[var(--t-heading)]"

@@ -27,7 +27,7 @@ const STORY_ROWS = [
       </>
     ),
     badge: (
-      <div className="mt-6 inline-flex items-center gap-4 rounded-xl border border-[var(--c-ink)] bg-black/5 px-4 py-2 text-left">
+      <div className="mt-6 inline-flex items-center gap-4 frame-ink bg-black/5 px-4 py-2 text-left">
         <div>
           <span className="label block text-[10px] uppercase text-[var(--c-ink)] opacity-70">Client Rating</span>
           <span className="font-display block text-2xl font-bold text-[var(--c-ink)]">4.9 / 5</span>
@@ -70,7 +70,7 @@ const STORY_ROWS = [
           {["gh", "in", "x"].map((s) => (
             <span
               key={s}
-              className="flex size-8 items-center justify-center rounded-lg bg-[var(--c-ink)] text-xs font-bold uppercase text-[var(--c-paper)]"
+              className="flex size-8 items-center justify-center bg-[var(--c-ink)] text-xs font-bold uppercase text-[var(--c-paper)]"
             >
               {s}
             </span>
@@ -99,10 +99,10 @@ function MemberTile({ name, role, email, specialty }: { name: string; role: stri
     .map((w) => w[0])
     .join("");
   return (
-    <article className="group relative rounded-3xl border border-black/10 bg-white p-6 shadow-sm transition-all hover:border-black/30 hover:shadow-md">
+    <article className="group relative frame-line motion-card bg-white p-6 text-[var(--c-ink)]">
       <div className="flex items-start justify-between gap-4">
         <div
-          className="flex aspect-square w-20 items-center justify-center rounded-2xl shadow-inner"
+          className="flex aspect-square w-20 items-center justify-center"
           style={{ background: "var(--c-ink)", color: "var(--c-paper)" }}
         >
           <span className="font-display text-3xl uppercase">{initials}</span>
@@ -110,7 +110,7 @@ function MemberTile({ name, role, email, specialty }: { name: string; role: stri
         <a
           href={`mailto:${email}`}
           aria-label={`Email ${name}`}
-          className="flex size-9 items-center justify-center rounded-full border border-black/10 text-sm font-bold text-[var(--c-ink)] transition-colors hover:bg-[var(--c-ink)] hover:text-white"
+          className="flex size-9 items-center justify-center text-sm font-bold text-[var(--c-ink)] transition-colors hover:bg-[var(--c-ink)] hover:text-white"
         >
           ↗
         </a>
@@ -189,10 +189,10 @@ export default function AboutPage() {
           {/* Right: Featured Story Media Card */}
           <div className="relative lg:pl-8">
             <div className="sticky top-28 space-y-6">
-              <div className="overflow-hidden rounded-3xl border border-black/15 bg-white p-3 shadow-xl">
+              <div className="overflow-hidden frame-line bg-white p-3">
                 <StoryVideo />
               </div>
-              <div className="rounded-2xl border border-black/10 bg-black/5 p-6 text-sm text-[var(--c-ink)]">
+              <div className="frame-line bg-black/5 p-6 text-sm text-[var(--c-ink)]">
                 <div className="flex items-center gap-2 font-display text-lg uppercase">
                   <Doodle name="spark" className="w-4 text-[var(--c-orange)]" />
                   Engineering Philosophy
@@ -256,7 +256,7 @@ export default function AboutPage() {
             items={PARTNER_NAMES.map((n) => (
               <span
                 key={n}
-                className="mx-2 flex h-24 w-44 items-center justify-center rounded-2xl bg-[var(--c-ink)] px-4 text-center font-display text-xl uppercase tracking-wide text-[var(--c-paper)] shadow-md"
+                className="mx-2 flex h-24 w-44 shrink-0 items-center justify-center bg-[var(--c-ink)] px-4 text-center font-display text-xl uppercase tracking-wide text-[var(--c-paper)]"
               >
                 {n}
               </span>
@@ -268,7 +268,7 @@ export default function AboutPage() {
           <p className="max-w-md text-base text-[var(--t-text)] leading-relaxed opacity-90">
             We partner with industry-standard cloud providers, frontier AI labs, and modern framework ecosystems to build resilient products.
           </p>
-          <FillButton href="/contact">Work with us</FillButton>
+          <FillButton href="/signup">Work with us</FillButton>
         </div>
       </ThemeSection>
     </PageMotion>

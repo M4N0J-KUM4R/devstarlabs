@@ -40,8 +40,8 @@ export default function Certifications() {
         {TRAININGS.map((t, i) => (
           <Link
             key={t.slug}
-            href="/programs"
-            className="group flex flex-col rounded-2xl p-6 no-underline transition-transform hover:-translate-y-1"
+            href="/pricing"
+            className="group flex flex-col frame-line motion-card p-6 no-underline"
             style={{
               background: "rgba(var(--c-ink-rgb),0.9)",
               color: "var(--c-paper)",
@@ -53,7 +53,7 @@ export default function Certifications() {
                 {CATEGORY_LABELS[t.category]}
               </span>
               <span
-                className="rounded-full px-3 py-1 text-[10px] font-bold uppercase text-black"
+                className="px-3 py-1 text-[10px] font-bold uppercase text-black"
                 style={{ background: "var(--c-orange)" }}
               >
                 {t.level}
@@ -79,7 +79,7 @@ export default function Certifications() {
       </div>
 
       <div className="mt-12 flex flex-wrap items-center gap-6">
-        <FillButton href="/programs">
+        <FillButton href="/pricing">
           Browse training tracks
         </FillButton>
         <div className="flex items-center gap-3 text-sm text-[var(--t-text)]">

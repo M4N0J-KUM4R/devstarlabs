@@ -5,16 +5,15 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { gsap } from "gsap";
 import HoverAccent from "@/components/system/HoverAccent";
-import LogoMark from "@/components/system/LogoMark";
 
+/* follow.art's exact nav: five center links, Login + Join on the right.
+   The Join pill is the .btn--pill filled action. */
 const NAV = [
-  { href: "/services", label: "Services" },
-  { href: "/showcase", label: "Showcase" },
   { href: "/about", label: "About" },
-  { href: "/programs", label: "Programs" },
-];
-const NAV_RIGHT = [
-  { href: "/contact", label: "Contact" },
+  { href: "/our-product", label: "Our Product" },
+  { href: "/community-board", label: "Community Board" },
+  { href: "/pricing", label: "Pricing" },
+  { href: "/faq", label: "FAQ" },
 ];
 
 /* Resolved color set the header adopts from the sheet it currently
@@ -108,48 +107,59 @@ export default function SiteHeader() {
 
   const closeMenu = () => setOpen(false);
 
+  /* follow.art's header paints itself with the sheet colour it floats
+     over (solid, never transparent) and draws a 1px --t-line bottom. */
   const style: React.CSSProperties = theme
     ? ({
         "--t-text": theme.text,
         "--t-heading": theme.heading,
         "--t-accent": theme.accent,
         "--t-line": theme.line,
+        backgroundColor: theme.bg,
         color: theme.heading,
       } as React.CSSProperties)
-    : { color: "var(--c-ink)" };
+    : ({
+        backgroundColor: "var(--c-paper)",
+        color: "var(--c-ink)",
+      } as React.CSSProperties);
 
   return (
     <>
       <header
-        className="promo-header fixed top-0 left-0 w-full transition-colors duration-200 border-b border-[color:var(--t-line)]"
+        className="promo-header fixed top-0 left-0 z-30 w-full"
         style={style}
       >
-        <div className="promo-header__inner mx-auto flex max-w-7xl items-center justify-between px-[var(--page-spacing)] py-4">
+        <div className="promo-header__inner mx-auto flex max-w-[1720px] items-center justify-between gap-6 px-[var(--page-spacing)]">
           <Link
             href="/"
-            className="flex items-center gap-2.5 font-display text-2xl uppercase tracking-tighter"
+            className="flex shrink-0 items-center gap-2 no-underline"
             aria-label="DevStarLabs homepage"
             onClick={closeMenu}
           >
-            <span className="font-display tracking-tight text-xl md:text-2xl">
-              Dev
+            <span className="font-display text-[19px] uppercase leading-none tracking-tight">
+              DevStar
             </span>
-            <LogoMark className="size-7 text-[var(--c-orange)]" />
-            <span className="font-display tracking-tight text-xl md:text-2xl">
-              Lab
+            <span className="font-display text-[19px] uppercase leading-none tracking-tight text-[var(--c-orange)]">
+              .
+            </span>
+            <span className="font-display text-[19px] uppercase leading-none tracking-tight">
+              Labs
+            </span>
+            <span className="promo-header__logo-sub ml-1 hidden xl:block">
+              One Practice. One Card.
             </span>
           </Link>
 
-          {/* Desktop Nav */}
-          <nav className="hidden items-center gap-8 md:flex">
+          {/* Desktop Nav — original's centered group */}
+          <nav className="hidden items-center gap-7 lg:flex">
             {NAV.map((n) => {
               const active = pathname.startsWith(n.href);
               return (
                 <Link
                   key={n.href}
                   href={n.href}
-                  className={`btn btn--nav text-sm uppercase tracking-wider font-medium ${
-                    active ? "is-active font-bold" : ""
+                  className={`btn btn--nav text-sm normal-case tracking-normal ${
+                    active ? "is-active" : ""
                   }`}
                 >
                   {n.label}
@@ -159,33 +169,48 @@ export default function SiteHeader() {
             })}
           </nav>
 
-          {/* Desktop Right Nav Links */}
-          <div className="hidden items-center gap-6 md:flex">
-            {NAV_RIGHT.map((n) => {
-              const active = pathname.startsWith(n.href);
-              return (
-                <Link
-                  key={n.label}
-                  href={n.href}
-                  className={`btn btn--nav text-sm uppercase tracking-wider font-medium ${
-                    active ? "is-active font-bold" : ""
-                  }`}
-                >
-                  {n.label}
-                  <HoverAccent />
-                </Link>
-              );
-            })}
+          {/* Desktop right — Login text + Join filled pill */}
+          <div className="hidden shrink-0 items-center gap-7 lg:flex">
+            <Link
+              href="/signin"
+              className={`btn btn--nav text-sm normal-case tracking-normal ${
+                pathname.startsWith("/signin") ? "is-active" : ""
+              }`}
+            >
+              Login
+              <HoverAccent />
+            </Link>
+            <Link
+              href="/signup"
+              className="btn btn--pill btn--solid text-sm normal-case tracking-normal"
+            >
+              Join
+              <HoverAccent />
+            </Link>
           </div>
 
           {/* Mobile hamburger */}
           <button
             type="button"
             onClick={() => setOpen(!open)}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-black/10 md:hidden"
+            className="flex h-10 w-10 items-center justify-center lg:hidden"
             aria-label="Toggle menu"
+            style={{ color: "inherit" }}
           >
-            <span className="font-mono text-lg font-bold">{open ? "✕" : "☰"}</span>
+            <span className="relative block h-3 w-5">
+              <span
+                className="absolute left-0 top-0 block h-px w-full"
+                style={{ background: "currentColor" }}
+              />
+              <span
+                className="absolute left-0 top-1.5 block h-px w-full"
+                style={{ background: "currentColor" }}
+              />
+              <span
+                className="absolute left-0 top-3 block h-px w-full"
+                style={{ background: "currentColor" }}
+              />
+            </span>
           </button>
         </div>
       </header>
@@ -193,43 +218,34 @@ export default function SiteHeader() {
       {/* Fullscreen Mobile Menu Panel */}
       <div
         id="menu-panel"
-        className="fixed inset-0 z-40 flex flex-col justify-between bg-[var(--c-ink)] p-8 pt-24 text-[var(--c-paper)] md:hidden"
+        className="fixed inset-0 z-40 flex flex-col justify-between bg-[var(--c-ink)] p-8 pt-24 text-[var(--c-paper)] lg:hidden"
         style={{ visibility: "hidden" }}
       >
         <nav className="flex flex-col space-y-6">
-          <Link
-            href="/"
-            onClick={closeMenu}
-            className="font-display text-4xl uppercase tracking-tight hover:text-[var(--c-orange)]"
-          >
-            Home
-          </Link>
-          {NAV.map((n) => (
+          {[
+            { href: "/", label: "Home" },
+            ...NAV,
+            { href: "/signin", label: "Login" },
+            { href: "/signup", label: "Join" },
+          ].map((n) => (
             <Link
               key={n.href}
               href={n.href}
               onClick={closeMenu}
-              className="font-display text-4xl uppercase tracking-tight hover:text-[var(--c-orange)]"
+              className="font-display text-4xl uppercase tracking-tight no-underline hover:text-[var(--c-orange)]"
             >
               {n.label}
             </Link>
           ))}
-          <Link
-            href="/contact"
-            onClick={closeMenu}
-            className="font-display text-4xl uppercase tracking-tight hover:text-[var(--c-orange)]"
-          >
-            Contact
-          </Link>
         </nav>
 
         <div className="border-t border-white/10 pt-6">
           <p className="text-xs uppercase tracking-widest text-white/50">
-            DevStarLabs Studio &amp; AI Lab
+            DevStar Labs — One Practice. One Card.
           </p>
           <a
             href="mailto:manoj@devstarlabs.cloud"
-            className="mt-2 block font-display text-xl uppercase text-white hover:text-[var(--c-orange)]"
+            className="mt-2 block font-display text-xl uppercase text-white no-underline hover:text-[var(--c-orange)]"
           >
             manoj@devstarlabs.cloud
           </a>

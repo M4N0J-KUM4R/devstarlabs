@@ -362,6 +362,12 @@ body {
   transform: scaleX(1) translateY(-50%);
 }
 
+/* filled pill on any sheet (header Join): always ink/paper pair */
+.btn--solid {
+  background: var(--c-ink);
+  color: var(--c-paper);
+}
+
 /* solid button (follow.art btn--primary): black pill/rect */
 .btn--pill,
 .btn--block {
@@ -555,6 +561,37 @@ hr {
 
 .promo-header__logo {
   position: relative;
+}
+
+/* the header paints itself with the sheet colour beneath it (JS theme
+   sync) and draws follow.art's 1px --t-line bottom rule */
+.promo-header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 100%;
+  border-bottom: 1px solid var(--t-line);
+}
+
+.promo-header__inner {
+  height: calc(var(--scale-px) * 50); /* --header-height (md) */
+}
+
+.promo-header__logo-sub {
+  font-size: calc(var(--scale-px) * 13);
+  letter-spacing: -0.02em;
+  opacity: 0.55;
+  line-height: 1.05;
+}
+
+@media (max-width: 979px) {
+  .promo-header__inner {
+    height: calc(var(--scale-px) * 40);
+  }
+  .promo-header__logo-sub {
+    display: none;
+  }
 }
 
 .promo-header__desktop-links {
@@ -1023,4 +1060,301 @@ hr {
 .t9__count {
   opacity: 0.7;
   font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================
+   SUBPAGE SYSTEM — ported from follow.art's page-level CSS
+   (PageHeader / TextPage / PlansDifference / faq / community)
+   ============================================================ */
+
+/* hand-drawn decoration via CSS mask (SVGs in /decos, fill=#fff) */
+.deco-mask {
+  display: inline-block;
+  background: currentColor;
+  -webkit-mask: var(--deco-url) center / contain no-repeat;
+  mask: var(--deco-url) center / contain no-repeat;
+  pointer-events: none;
+}
+
+/* hairline frames — original plans-difference__frame_*:
+   free: box-shadow 0 0 1px 1px inset var(--t-line)
+   upgraded: box-shadow 0 0 0 1px inset var(--c-black) */
+.frame-line {
+  box-shadow: 0 0 1px 1px inset var(--t-line);
+  border-radius: 0;
+}
+.frame-ink {
+  box-shadow: 0 0 0 1px inset var(--c-ink);
+  border-radius: 0;
+}
+/* list rows separated by a 1px underline shadow (original
+   .plans-difference__list-item) */
+.row-line {
+  box-shadow: 0 1px 0 0 var(--t-line);
+  border-radius: 0;
+}
+
+/* card motion — original cards ease translateY(-3px) on hover with
+   the .3s cubic-bezier(.25,.74,.22,.99) standard curve */
+.motion-card {
+  transition:
+    transform 0.3s cubic-bezier(0.25, 0.74, 0.22, 0.99),
+    box-shadow 0.3s cubic-bezier(0.25, 0.74, 0.22, 0.99);
+}
+@media (hover: hover) and (pointer: fine) {
+  .motion-card:hover {
+    transform: translateY(-3px);
+  }
+  .motion-card:hover.frame-ink,
+  .frame-ink.motion-card:hover {
+    box-shadow: 0 0 0 1px inset var(--c-ink), 0 10px 24px -18px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* title decoration — original .subscribe-icon--right-top: the doodle
+   sits right/top of the title with negative offsets, z above text */
+.title-deco {
+  position: absolute;
+  right: calc(var(--scale-px) * -29);
+  top: calc(var(--scale-px) * -49);
+  z-index: 1;
+}
+@media (max-width: 979px) {
+  .title-deco {
+    right: calc(var(--scale-px) * -12);
+    top: calc(var(--scale-px) * -23);
+  }
+}
+
+/* TEXT PAGE (legal) — original .text-page-title is a sticky right
+   column, .text-page-content carries a 1px right divider */
+.text-page-title {
+  position: sticky;
+  top: calc(var(--scale-px) * 90);
+  display: flex;
+  height: auto;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+@media (min-width: 980px) {
+  .text-page-title {
+    top: calc(var(--scale-px) * 110);
+    height: calc(100svh - var(--scale-px) * 190);
+    justify-content: space-between;
+    align-items: flex-end;
+    text-align: right;
+  }
+  .text-page-content {
+    position: relative;
+  }
+  .text-page-content::before {
+    border-right: 1px solid var(--t-line);
+    content: "";
+    height: 100%;
+    position: absolute;
+    right: calc(var(--page-spacing) * -0.5);
+    top: 0;
+  }
+}
+.text-page-content h2 {
+  font-size: calc(var(--scale-px) * 21);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-top: calc(var(--scale-px) * 34);
+  margin-bottom: calc(var(--scale-px) * 10);
+}
+.text-page-content p {
+  margin-bottom: calc(var(--scale-px) * 12);
+  max-width: 62ch;
+}
+.text-page-content ul {
+  list-style: none;
+  margin-bottom: calc(var(--scale-px) * 12);
+}
+.text-page-content ul li {
+  position: relative;
+  padding-left: calc(var(--scale-px) * 18);
+  margin-bottom: 6px;
+  max-width: 60ch;
+}
+.text-page-content ul li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: calc(var(--scale-px) * 6);
+  height: calc(var(--scale-px) * 6);
+  background: var(--t-accent);
+}
+
+/* FAQ accordion — original .faq-section__card-list-item */
+.faq-item-header {
+  width: 100%;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: calc(var(--scale-px) * 16);
+  padding: calc(var(--scale-px) * 16) 0;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+}
+.faq-item:not(:last-child) .faq-item-header {
+  border-bottom: 1px solid var(--t-line);
+}
+.faq-item.is-open .faq-item-header {
+  border-color: var(--t-heading) !important;
+}
+.faq-item-arrow {
+  flex-shrink: 0;
+  width: calc(var(--scale-px) * 14);
+  height: calc(var(--scale-px) * 14);
+  transition: transform 0.3s cubic-bezier(0.25, 0.74, 0.22, 0.99);
+  align-self: center;
+}
+.faq-item.is-open .faq-item-arrow {
+  transform: rotate(180deg);
+}
+.faq-item-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.4s cubic-bezier(0.55, 0, 0.1, 1);
+}
+.faq-item.is-open .faq-item-body {
+  grid-template-rows: 1fr;
+}
+.faq-item-body > div {
+  overflow: hidden;
+}
+
+/* COMMUNITY BOARD thread cards — original connectory thread card:
+   flat sheet, hairline frame, avatar circle, action pill */
+.thread-card {
+  background: var(--t-background);
+  box-shadow: 0 0 1px 1px inset var(--t-line);
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--scale-px) * 12);
+  padding: calc(var(--scale-px) * 18);
+}
+.thread-card__line {
+  height: 1px;
+  background: var(--t-line);
+  border: 0;
+  margin: 0;
+}
+.thread-card__img {
+  width: 100%;
+  display: block;
+  background: var(--ink-03);
+  box-shadow: 0 0 1px 1px inset var(--t-line);
+}
+.thread-avatar {
+  width: calc(var(--scale-px) * 40);
+  height: calc(var(--scale-px) * 40);
+  border-radius: 999px;
+  object-fit: cover;
+  background: var(--ink-03);
+}
+
+/* AUTH PAGES — original /signin /signup: left poster sheet with the
+   giant wordmark + floating card, right column with the form */
+.auth-left {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: calc(var(--scale-px) * 24);
+  min-height: 100svh;
+}
+.auth-card-float {
+  position: absolute;
+  width: clamp(180px, 21vw, 300px);
+  filter: drop-shadow(0 24px 44px rgba(0, 0, 0, 0.28));
+  transition: transform 1.5s cubic-bezier(0.55, 0, 0.1, 1);
+}
+@media (hover: hover) and (pointer: fine) {
+  .auth-card-float:hover {
+    transform: rotate(-2deg) translateY(-6px);
+  }
+}
+.auth-right {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: calc(var(--scale-px) * 24);
+}
+.auth-tab {
+  flex: 1;
+  text-align: center;
+  font-size: clamp(30px, 3.4vw, 46px);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  padding-bottom: calc(var(--scale-px) * 14);
+  border-bottom: 1px solid var(--t-line);
+  color: var(--t-muted);
+  transition: color 0.3s cubic-bezier(0.25, 0.74, 0.22, 0.99);
+}
+.auth-tab.is-active {
+  color: var(--t-heading);
+  border-color: var(--t-heading);
+}
+
+/* inputs — original .input-text: 1px --input-border group, floating
+   label above, quiet placeholder */
+.input-line {
+  position: relative;
+}
+.input-line__field {
+  width: 100%;
+  height: calc(var(--scale-px) * 52);
+  padding: calc(var(--scale-px) * 10) calc(var(--scale-px) * 16);
+  background: transparent;
+  border: 1px solid var(--t-line);
+  color: var(--t-heading);
+  font: inherit;
+  font-size: calc(var(--scale-px) * 15);
+  letter-spacing: -0.02em;
+  border-radius: 0;
+  outline: none;
+  transition: border-color 0.3s cubic-bezier(0.25, 0.74, 0.22, 0.99);
+}
+.input-line__field::placeholder {
+  color: var(--t-muted);
+  opacity: 0.75;
+}
+.input-line__field:focus {
+  border-color: var(--t-heading);
+}
+.input-line__label {
+  display: block;
+  font-size: calc(var(--scale-px) * 13);
+  color: var(--t-muted);
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+.input-line__label .req {
+  color: var(--c-error);
+}
+
+/* plan panels — original card-plan__panel */
+.plan-panel {
+  padding: calc(var(--scale-px) * 18);
+  display: flex;
+  flex-direction: column;
+}
+.plan-feature-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: calc(var(--scale-px) * 16);
+  height: calc(var(--scale-px) * 50);
+  align-items: center;
 }

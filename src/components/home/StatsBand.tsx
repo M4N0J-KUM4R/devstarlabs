@@ -28,7 +28,7 @@ export default function StatsBand() {
         {STATS.map((s) => (
           <div
             key={s.label}
-            className="rounded-3xl p-6 md:p-8 shadow-lg"
+            className="frame-line p-6 md:p-8"
             style={{
               background: "var(--c-ink)",
               color: "var(--c-paper)",
