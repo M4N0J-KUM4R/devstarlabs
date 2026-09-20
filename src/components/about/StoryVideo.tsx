@@ -44,14 +44,30 @@ export default function StoryVideo() {
         onClick={toggle}
         className="aspect-[4/3] w-full object-cover"
       />
-      <button
-        type="button"
-        onClick={toggle}
-        aria-label={playing ? "Pause video" : "Play video"}
-        className="absolute left-1/2 top-1/2 flex size-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center bg-[var(--c-ink)] text-xl text-[var(--c-paper)] shadow-[inset_0_0_0_1px_var(--c-paper)] max-md:size-12"
-      >
-        {playing ? "❚❚" : "▶"}
-      </button>
+      {VIDEO_SRC ? (
+        <button
+          type="button"
+          onClick={toggle}
+          aria-label={playing ? "Pause video" : "Play video"}
+          className="absolute left-1/2 top-1/2 flex size-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center bg-[var(--c-ink)] text-xl text-[var(--c-paper)] shadow-[inset_0_0_0_1px_var(--c-paper)] max-md:size-12"
+        >
+          {playing ? "❚❚" : "▶"}
+        </button>
+      ) : (
+        /* no video wired up yet: a non-interactive slate instead of a
+           play button that would do nothing */
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-3 text-[var(--c-paper)]"
+        >
+          <span className="font-display text-2xl uppercase tracking-wide opacity-90">
+            Our story
+          </span>
+          <span className="label text-[10px] uppercase tracking-[0.2em] opacity-50">
+            Film coming soon
+          </span>
+        </span>
+      )}
     </div>
   );
 }

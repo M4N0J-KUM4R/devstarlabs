@@ -40,7 +40,7 @@ export default function Certifications() {
         {TRAININGS.map((t, i) => (
           <Link
             key={t.slug}
-            href="/our-product"
+            href="/programs"
             className="group flex flex-col rounded-2xl p-6 no-underline transition-transform hover:-translate-y-1"
             style={{
               background: "rgba(var(--c-ink-rgb),0.9)",
@@ -79,8 +79,8 @@ export default function Certifications() {
       </div>
 
       <div className="mt-12 flex flex-wrap items-center gap-6">
-        <FillButton href="/pricing" variant="outline">
-          Browse membership plans
+        <FillButton href="/programs">
+          Browse training tracks
         </FillButton>
         <div className="flex items-center gap-3 text-sm text-[var(--t-text)]">
           <Doodle name="spark" className="w-6 text-[var(--c-orange)]" />

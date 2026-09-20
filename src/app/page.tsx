@@ -5,6 +5,8 @@ import AboutStory from "@/components/home/AboutStory";
 import WhatWeDo from "@/components/home/WhatWeDo";
 import Centralize from "@/components/home/Centralize";
 import StatsBand from "@/components/home/StatsBand";
+import Certifications from "@/components/home/Certifications";
+import Lab from "@/components/home/Lab";
 import Testimonials from "@/components/home/Testimonials";
 import CtaSection from "@/components/home/CtaSection";
 
@@ -23,6 +25,8 @@ export default function HomePage() {
       <WhatWeDo />
       <Centralize />
       <StatsBand />
+      <Certifications />
+      <Lab />
       <Testimonials />
       <CtaSection />
     </PageMotion>
