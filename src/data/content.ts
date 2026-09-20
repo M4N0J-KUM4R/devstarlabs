@@ -7,9 +7,26 @@ export type Service = {
   deliverables: string[];
   stack: string[];
   description: string[];
+  metrics?: { label: string; value: string }[];
 };
 
-export type Training = {
+export type Project = {
+  slug: string;
+  title: string;
+  client: string;
+  category: "Full-Stack Web" | "Mobile App" | "AI & Automation" | "Cloud & DevOps" | "UI/UX & Design";
+  year: string;
+  tagline: string;
+  summary: string;
+  challenge: string;
+  solution: string;
+  impact: string;
+  metrics: { label: string; value: string }[];
+  stack: string[];
+  theme: "orange" | "sand" | "sage" | "steel";
+};
+
+export type Program = {
   slug: string;
   title: string;
   cert: string;
@@ -22,6 +39,17 @@ export type Training = {
   theme: "orange" | "sand" | "sage" | "steel";
 };
 
+export type TeamMember = {
+  name: string;
+  role: string;
+  specialty: string;
+  bio: string;
+  years: string;
+  accent: string;
+  email: string;
+  photo?: string;
+};
+
 export type Testimonial = {
   quote: string;
   name: string;
@@ -30,508 +58,443 @@ export type Testimonial = {
 };
 
 /* ------------------------------------------------------------------ */
-/* SERVICES                                                            */
+/* 5 CORE SERVICE PILLARS                                             */
 /* ------------------------------------------------------------------ */
 
 export const SERVICES: Service[] = [
   {
     slug: "ui-ux-design",
-    title: "UI/UX Design",
+    title: "UI/UX & Design Systems",
     short: "Interfaces that feel inevitable",
-    tagline: "Research, design systems, prototypes — design that ships.",
+    tagline: "Research, design tokens, interactive prototypes — design engineered for production.",
     theme: "sage",
     deliverables: [
-      "Product discovery & user research",
-      "Wireframes and interactive prototypes",
-      "Design systems & component libraries",
-      "Usability testing and iteration",
+      "Product discovery & interactive wireframing",
+      "Token-driven multi-theme design systems",
+      "High-fidelity WebGL & micro-interaction prototypes",
+      "Accessibility audits (WCAG 2.2 AAA standard)",
     ],
-    stack: ["Figma", "Design tokens", "Storybook", "Maze"],
+    stack: ["Figma", "Design Tokens", "Storybook", "Framer Motion", "Tailwind CSS"],
     description: [
-      "We design interfaces the way engineers build systems: on foundations. Every engagement starts with research and ends with a token-driven design system your developers can implement without guessing.",
-      "Our design process is measurably tied to product outcomes — activation, retention, task completion — not just aesthetics.",
+      "We design interfaces the way senior software engineers architect systems: starting with solid composable foundations. Every engagement pairs user psychology with a token-driven component architecture your team can deploy without friction.",
+      "Our designs are directly tied to measurable conversion outcomes — sub-second interaction feedback, flawless mobile ergonomics, and aesthetic authority.",
+    ],
+    metrics: [
+      { label: "Design-to-Dev Velocity", value: "+300%" },
+      { label: "Accessibility Score", value: "100/100" },
     ],
   },
   {
-    slug: "web-development",
-    title: "Web Development",
-    short: "Fast, scalable web products",
-    tagline: "Next.js platforms, marketing sites, and web apps that score green.",
+    slug: "full-stack-web-apps",
+    title: "Full-Stack Web & Mobile Apps",
+    short: "Fast, scalable production software",
+    tagline: "Next.js platforms, React Native mobile apps, and high-throughput Node/Go backends.",
     theme: "orange",
     deliverables: [
-      "Marketing sites and landing systems",
-      "SaaS platforms and dashboards",
-      "E-commerce storefronts",
-      "Performance and Core Web Vitals audits",
+      "Modern full-stack web applications & SaaS dashboards",
+      "Native iOS and Android cross-platform apps",
+      "High-throughput REST, GraphQL & tRPC APIs",
+      "Real-time state synchronization & WebSocket channels",
     ],
-    stack: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Node.js"],
+    stack: ["Next.js 16", "React 19", "TypeScript", "React Native", "Node.js", "Go", "PostgreSQL"],
     description: [
-      "We build web products with the same stack the best sites on the internet use — typed end to end, server-rendered by default, and obsessed with Core Web Vitals.",
-      "Every project ships with CI, preview environments, and documentation, so your team owns it as much as we do.",
+      "We build web and mobile products using the modern frontier stack — strictly typed end-to-end, server-rendered with edge hydration, and optimized for sub-100ms response times.",
+      "Every project ships with comprehensive CI/CD, automated integration test suites, and clean documentation so your team owns complete sovereignty over the codebase.",
+    ],
+    metrics: [
+      { label: "Core Web Vitals", value: "Green 99+" },
+      { label: "P99 API Latency", value: "< 45ms" },
     ],
   },
   {
-    slug: "app-development",
-    title: "App Development",
-    short: "Native-feel apps, one codebase",
-    tagline: "iOS and Android apps built for the store and for scale.",
-    theme: "steel",
-    deliverables: [
-      "Cross-platform mobile apps (React Native / Flutter)",
-      "App Store and Play Store launch support",
-      "Offline-first data sync",
-      "Push notifications and deep links",
-    ],
-    stack: ["React Native", "Flutter", "Swift", "Kotlin", "Expo"],
-    description: [
-      "One codebase, native feel. We ship apps that pass store review the first time and stay maintainable for years.",
-      "From MVP to v5 — we handle architecture, release pipelines, and the unglamorous 20% that makes apps feel finished.",
-    ],
-  },
-  {
-    slug: "cloud-hosting",
-    title: "Cloud Hosting",
+    slug: "cloud-hosting-devops",
+    title: "Cloud Hosting & Infrastructure",
     short: "Infrastructure that never wakes you up",
-    tagline: "Managed cloud, tuned costs, zero-surprise uptime.",
+    tagline: "Managed cloud architecture, Kubernetes clusters, and zero-surprise uptime.",
     theme: "sand",
     deliverables: [
-      "Cloud architecture and migration",
-      "Managed hosting and 24/7 monitoring",
-      "Cost optimization reviews",
-      "Backup, disaster recovery, and runbooks",
+      "Multi-region AWS & GCP cloud architecture",
+      "Automated GitOps CI/CD delivery pipelines",
+      "Infrastructure as Code (Terraform & OpenTofu)",
+      "24/7 Managed Cloud Hosting & Disaster Recovery",
     ],
-    stack: ["AWS", "GCP", "Azure", "Vercel", "Cloudflare"],
+    stack: ["AWS", "GCP", "Kubernetes", "Terraform", "Docker", "Cloudflare", "Prometheus"],
     description: [
-      "We host what we build — and what others built. Your infrastructure gets architecture reviews, cost tuning, and on-call engineers who have actually been paged before.",
-      "Uptime is a feature. We treat it like one, with SLOs, alerting that matters, and postmortems you can read.",
+      "We manage and host high-availability systems with predictable costs. Your infrastructure gets battle-tested architecture reviews, automated scaling policies, and round-the-clock monitoring by engineers who have run live production clusters.",
+      "Uptime is non-negotiable. We enforce strict SLOs, automated failovers, and transparent runbooks.",
+    ],
+    metrics: [
+      { label: "Historical Uptime", value: "99.99%" },
+      { label: "Cloud Cost Reduction", value: "Avg 35%" },
     ],
   },
   {
-    slug: "devops",
-    title: "DevOps",
-    short: "Ship daily without fear",
-    tagline: "CI/CD, Kubernetes, and IaC — delivery pipelines that scale.",
-    theme: "sage",
-    deliverables: [
-      "CI/CD pipeline design and implementation",
-      "Kubernetes clusters and GitOps workflows",
-      "Infrastructure as Code (Terraform)",
-      "Observability: logs, metrics, traces",
-    ],
-    stack: ["Kubernetes", "Terraform", "GitHub Actions", "ArgoCD", "Prometheus"],
-    description: [
-      "Deploys should be boring. We build pipelines where 'ship it' means a merged pull request, not a war room.",
-      "Everything as code: infrastructure, policies, dashboards. Auditable, reproducible, and handed over with training.",
-    ],
-  },
-  {
-    slug: "seo-optimization",
-    title: "SEO Optimization",
-    short: "Rank for what your buyers search",
-    tagline: "Technical SEO, content strategy, and measurable organic growth.",
+    slug: "seo-digital-marketing",
+    title: "SEO Optimization & Growth",
+    short: "Rank for high-intent buyer queries",
+    tagline: "Technical SEO, programmatic architectures, and conversion-rate optimization.",
     theme: "steel",
     deliverables: [
-      "Technical audits and Core Web Vitals fixes",
-      "Keyword and content strategy",
-      "Schema markup and structured data",
-      "Rank tracking and reporting",
+      "Technical Core Web Vitals & crawlability audits",
+      "Programmatic SEO architecture & schema markup",
+      "High-converting landing page funnels & CRO",
+      "Event-driven product analytics & attribution models",
     ],
-    stack: ["Search Console", "Ahrefs", "Lighthouse", "Schema.org"],
+    stack: ["Schema.org", "Google Search Console", "Ahrefs", "PostHog", "GA4"],
     description: [
-      "We practice what we sell — this site ships with structured data, semantic HTML, and sub-second loads. Your site gets the same treatment.",
-      "No black-hat shortcuts: compounding technical foundations plus content that answers real queries.",
+      "We practice what we build — high-performance semantic markup, sub-second TTFB, and structured rich snippets that dominate search rankings for high-intent queries.",
+      "No fragile shortcuts: we build compounding technical foundations paired with conversion funnels that drive real enterprise leads.",
+    ],
+    metrics: [
+      { label: "Organic Growth", value: "+240% YoY" },
+      { label: "PageSpeed Index", value: "0.8s" },
     ],
   },
   {
-    slug: "ai-solutions",
-    title: "AI Solutions",
-    short: "LLMs in production, not in demos",
-    tagline: "RAG systems, agents, and AI features your users actually use.",
+    slug: "ai-automation-integrations",
+    title: "AI Integrations & Automations",
+    short: "Autonomous agents & LLMs in production",
+    tagline: "RAG pipelines, custom AI agent swarms, and enterprise workflow automations.",
     theme: "orange",
     deliverables: [
-      "AI product strategy and prototyping",
-      "RAG pipelines over your data",
-      "LLM-powered features and agents",
-      "Evaluation, guardrails, and cost control",
+      "Autonomous AI agent workflows & tool calling",
+      "Production RAG pipelines over enterprise data",
+      "Fine-tuned models & multi-modal AI endpoints",
+      "Guardrails, eval suites, and token cost optimization",
     ],
-    stack: ["OpenAI", "Anthropic", "LangChain", "pgvector", "Vercel AI SDK"],
+    stack: ["OpenAI", "Anthropic Claude", "LangChain", "pgvector", "Vercel AI SDK", "Temporal"],
     description: [
-      "The gap between an AI demo and an AI product is evaluation, latency, and cost. We close it.",
-      "We integrate LLMs where they genuinely beat the alternative — and tell you honestly where they don't.",
+      "The gap between an AI demo and a reliable production product is evaluation, latency, and cost control. We close that gap.",
+      "We build resilient AI pipelines where LLMs and autonomous agents automate real business operations — safely, with strict guardrails and evaluation benchmarks.",
     ],
-  },
-  {
-    slug: "digital-marketing",
-    title: "Digital Marketing",
-    short: "Demand that compounds",
-    tagline: "Paid, lifecycle, and analytics wired to revenue.",
-    theme: "sand",
-    deliverables: [
-      "Performance campaigns (search, social)",
-      "Landing pages and CRO experiments",
-      "Lifecycle email and automation",
-      "Analytics setup and attribution",
-    ],
-    stack: ["GA4", "Meta Ads", "Google Ads", "HubSpot", "PostHog"],
-    description: [
-      "Marketing that respects engineering: clean tracking, fast landing pages, experiments with real statistics.",
-      "We report in revenue, not impressions.",
+    metrics: [
+      { label: "Workflow Efficiency", value: "10× Faster" },
+      { label: "Accuracy & Eval Pass", value: "99.2%" },
     ],
   },
 ];
 
 /* ------------------------------------------------------------------ */
-/* TRAININGS                                                           */
+/* CASE STUDIES & SHOWCASE PROJECTS                                   */
 /* ------------------------------------------------------------------ */
 
-export const TRAININGS: Training[] = [
+export const PROJECTS: Project[] = [
   {
-    slug: "aws-certification",
-    title: "AWS Certification",
-    cert: "AWS Solutions Architect / Cloud Practitioner",
+    slug: "hyperflow-fintech",
+    title: "HyperFlow Distributed Settlement",
+    client: "Global Capital Network",
+    category: "Full-Stack Web",
+    year: "2025",
+    tagline: "Sub-millisecond global liquidity routing and real-time ledger orchestration.",
+    summary:
+      "Engineered an ultra-low latency settlement portal handling $40M+ in daily transaction volume with real-time WebSocket telemetry and sub-50ms regional failover.",
+    challenge:
+      "The client's legacy settlement platform suffered from slow synchronization locks and intermittent database contention during market volatility peaks.",
+    solution:
+      "Architected an event-driven Go and Next.js platform powered by distributed Redis Streams, partitioned PostgreSQL, and edge-routed WebSockets.",
+    impact:
+      "Reduced transaction settlement latency by 85% while scaling transaction throughput 12× with zero downtime across 18 global regions.",
+    metrics: [
+      { label: "Daily Volume", value: "$40M+" },
+      { label: "P99 Latency", value: "32ms" },
+      { label: "Uptime", value: "99.999%" },
+    ],
+    stack: ["Next.js", "Go", "PostgreSQL", "Redis Streams", "Kubernetes", "AWS"],
+    theme: "orange",
+  },
+  {
+    slug: "cortex-ai-copilot",
+    title: "Cortex Enterprise Agent Swarm",
+    client: "Nexus Industrial Intelligence",
+    category: "AI & Automation",
+    year: "2025",
+    tagline: "Multi-agent autonomous triage and document intelligence pipeline.",
+    summary:
+      "Built an autonomous LLM agent swarm that extracts, parses, and cross-verifies complex supply chain contracts and compliance certifications across 50,000 documents weekly.",
+    challenge:
+      "Manual contract review took 4 business days per compliance tier with an unacceptable human error rate during cross-jurisdictional audits.",
+    solution:
+      "Deployed a resilient RAG pipeline with custom vector embeddings (pgvector), automated evaluation gates via TypeSafe AI, and human-in-the-loop validation.",
+    impact:
+      "Cut document review cycle time from 96 hours to under 3 minutes with a verified 99.4% factual extraction accuracy rate.",
+    metrics: [
+      { label: "Cycle Reduction", value: "98%" },
+      { label: "Weekly Docs", value: "50,000+" },
+      { label: "Accuracy", value: "99.4%" },
+    ],
+    stack: ["Anthropic Claude", "OpenAI", "pgvector", "Python", "Temporal", "Next.js"],
+    theme: "sand",
+  },
+  {
+    slug: "strata-cloud-platform",
+    title: "Strata Cloud Infrastructure",
+    client: "AeroTelemetry Global",
+    category: "Cloud & DevOps",
+    year: "2024",
+    tagline: "Automated multi-cloud Kubernetes deployment and disaster recovery suite.",
+    summary:
+      "Architected a zero-downtime GitOps infrastructure spanning AWS and GCP with automated canary deployments and instant failover capabilities.",
+    challenge:
+      "Complex microservice deployments caused frequent staging delays and manual configuration drift across developer environments.",
+    solution:
+      "Implemented modular Terraform IaC, ArgoCD automated GitOps pipelines, and comprehensive Prometheus/Grafana observability clusters.",
+    impact:
+      "Accelerated deployment frequency from bi-weekly releases to 14 daily production deploys while slashing infrastructure hosting costs by 42%.",
+    metrics: [
+      { label: "Deploys / Day", value: "14+" },
+      { label: "Cloud Cost Saved", value: "42%" },
+      { label: "MTTR", value: "< 2 mins" },
+    ],
+    stack: ["Terraform", "Kubernetes", "AWS", "GCP", "ArgoCD", "Prometheus"],
+    theme: "steel",
+  },
+  {
+    slug: "lumina-design-system",
+    title: "Lumina Studio Design System",
+    client: "Vivid Creator Network",
+    category: "UI/UX & Design",
+    year: "2024",
+    tagline: "Monumental typography, 60 FPS WebGL shaders, and token-driven multi-platform UI.",
+    summary:
+      "Designed and engineered an award-winning creative portfolio and brand identity studio featuring real-time WebGL card physics and seamless mobile responsiveness.",
+    challenge:
+      "The client needed a digital presence that would stand out among global creative agencies while maintaining 100/100 Core Web Vitals on mobile.",
+    solution:
+      "Created a tokenized design system in Figma, translated into custom Three.js shader uniforms and a modular Next.js component suite.",
+    impact:
+      "Increased user session duration by 340% and earned Awwwards Site of the Day honors with zero layout shift.",
+    metrics: [
+      { label: "Session Duration", value: "+340%" },
+      { label: "Mobile Speed", value: "100/100" },
+      { label: "Awards", value: "Awwwards SOTD" },
+    ],
+    stack: ["Three.js", "WebGL", "Figma", "Next.js", "Tailwind CSS"],
+    theme: "sage",
+  },
+];
+
+/* ------------------------------------------------------------------ */
+/* DEDICATED ENGINEERING PROGRAMS & CERTIFICATIONS                     */
+/* ------------------------------------------------------------------ */
+
+export const PROGRAMS: Program[] = [
+  {
+    slug: "aws-cloud-architect",
+    title: "AWS Cloud Architecture Track",
+    cert: "AWS Solutions Architect Professional",
     category: "cloud",
     duration: "8 weeks",
-    format: "Live online + labs",
-    level: "Beginner",
+    format: "Live labs + production clusters",
+    level: "Intermediate",
     outcome:
-      "Design and operate resilient, cost-efficient AWS infrastructure — and pass the associate-level exam with confidence.",
+      "Architect and operate resilient, cost-optimized AWS multi-account systems with infrastructure-as-code and Well-Architected rigor.",
     modules: [
-      "AWS core services and account architecture",
-      "VPC networking, security groups, IAM deep-dive",
-      "Compute: EC2, containers, Lambda, ECS",
-      "Storage and databases: S3, RDS, DynamoDB",
-      "High availability and auto-scaling patterns",
-      "Cost optimization and Well-Architected reviews",
-      "Exam drills and practice scenarios",
+      "VPC networking, transit gateways & cross-region peering",
+      "Container orchestration: ECS, Fargate & EKS deep-dive",
+      "Serverless event pipelines with Lambda & SQS/EventBridge",
+      "High-availability relational & NoSQL data architectures",
+      "Enterprise IAM governance, KMS encryption & security audits",
+      "Cost optimization models & Well-Architected review lab",
+      "Real-world production capstone & certification drill",
     ],
     theme: "orange",
   },
   {
-    slug: "terraform-associate",
-    title: "Terraform Associate",
+    slug: "kubernetes-cka-ckad",
+    title: "Kubernetes & Cloud-Native Engineering",
+    cert: "CKA / CKAD Certified Kubernetes Engineer",
+    category: "devops",
+    duration: "6 weeks",
+    format: "Hands-on cluster troubleshooting",
+    level: "Advanced",
+    outcome:
+      "Master Kubernetes cluster operations, CNI networking, storage lifecycle, and secure workload deployment on live clusters.",
+    modules: [
+      "Cluster architecture, kubeadm bootstrap & etcd backups",
+      "Workload primitives: Deployments, StatefulSets & DaemonSets",
+      "Advanced ingress controllers, CoreDNS & network policies",
+      "Persistent storage orchestration (CSI, StorageClasses)",
+      "RBAC security policies, service accounts & Pod Security Standards",
+      "Live cluster incident triage & node failure recovery",
+      "Timed performance exam simulations",
+    ],
+    theme: "steel",
+  },
+  {
+    slug: "generative-ai-engineering",
+    title: "Generative AI & LLM Systems Track",
+    cert: "DevStarLabs AI Systems Engineer",
+    category: "ai-data",
+    duration: "10 weeks",
+    format: "Live project build & eval pipelines",
+    level: "Intermediate",
+    outcome:
+      "Build production-grade LLM applications: multi-agent swarms, hybrid vector search (RAG), and automated evaluation suites.",
+    modules: [
+      "LLM mechanics, token budgets & prompt engineering",
+      "Vector embeddings, chunking strategies & pgvector indexing",
+      "Autonomous agents, tool calling & MCP integration",
+      "Multi-modal generative pipelines (vision, voice, code)",
+      "Evaluation benchmarks, guardrails & latency optimization",
+      "Fine-tuning vs retrieval-augmented generation trade-offs",
+      "Production capstone: deploy autonomous AI copilot",
+    ],
+    theme: "orange",
+  },
+  {
+    slug: "fullstack-production-react",
+    title: "Full-Stack Web & Next.js Professional",
+    cert: "DevStarLabs Full-Stack Engineer",
+    category: "development",
+    duration: "12 weeks",
+    format: "Live coding + 4 production capstones",
+    level: "Beginner",
+    outcome:
+      "Design, build, and deploy high-performance web applications using React 19, Next.js 16, TypeScript, and modern database systems.",
+    modules: [
+      "Modern JavaScript ES2024 & strict TypeScript architecture",
+      "React 19 Server Components, Actions & state management",
+      "Next.js Turbopack routing, data fetching & SSR/SSG caching",
+      "Database schema modeling with PostgreSQL & Prisma",
+      "Authentication, payment processing & webhook handling",
+      "End-to-end testing with Vitest & Playwright",
+      "Capstone: launch and monetize a production SaaS platform",
+    ],
+    theme: "sage",
+  },
+  {
+    slug: "terraform-iac-devops",
+    title: "Terraform & GitOps Pipeline Track",
     cert: "HashiCorp Certified: Terraform Associate",
     category: "devops",
     duration: "4 weeks",
-    format: "Live online + labs",
+    format: "Hands-on cloud lab environments",
     level: "Intermediate",
     outcome:
-      "Write production-grade infrastructure as code and pass the HashiCorp Terraform Associate exam.",
+      "Write maintainable, modular Infrastructure as Code and automate multi-environment deployments via GitOps workflows.",
     modules: [
-      "IaC principles and Terraform workflow",
-      "HCL: resources, variables, outputs, modules",
-      "State management, backends, and locking",
-      "Workspaces and multi-environment patterns",
-      "Provisioners, functions, and dynamic blocks",
-      "Registry modules and testing",
-      "Exam preparation lab",
-    ],
-    theme: "sage",
-  },
-  {
-    slug: "cka",
-    title: "CKA",
-    cert: "Certified Kubernetes Administrator",
-    category: "devops",
-    duration: "6 weeks",
-    format: "Live online + lab cluster",
-    level: "Advanced",
-    outcome:
-      "Administer production Kubernetes clusters and pass the hands-on CKA performance-based exam.",
-    modules: [
-      "Cluster architecture and kubeadm bootstrap",
-      "Workloads, scheduling, and taints",
-      "Networking: CNI, services, ingress, DNS",
-      "Storage: PV, PVC, StorageClasses",
-      "Security: RBAC, service accounts, network policies",
-      "Troubleshooting clusters, nodes, and pods",
-      "Timed exam simulations",
-    ],
-    theme: "steel",
-  },
-  {
-    slug: "ckad",
-    title: "CKAD",
-    cert: "Certified Kubernetes Application Developer",
-    category: "devops",
-    duration: "5 weeks",
-    format: "Live online + lab cluster",
-    level: "Intermediate",
-    outcome:
-      "Build, deploy, and debug cloud-native applications on Kubernetes — and pass the CKAD hands-on exam.",
-    modules: [
-      "Pods, Deployments, and Jobs",
-      "ConfigMaps, Secrets, and resource limits",
-      "Multi-container patterns (sidecar, adapter)",
-      "Probes, init containers, and lifecycle hooks",
-      "Helm charts and Kustomize",
-      "Observability and debugging workloads",
-      "Timed exam simulations",
-    ],
-    theme: "sand",
-  },
-  {
-    slug: "docker",
-    title: "Docker",
-    cert: "Docker Certified / DevOps Fundamentals",
-    category: "devops",
-    duration: "3 weeks",
-    format: "Live online + labs",
-    level: "Beginner",
-    outcome:
-      "Containerize any application, write efficient images, and run Compose-based stacks in development and CI.",
-    modules: [
-      "Images, layers, and the build cache",
-      "Writing lean Dockerfiles (multi-stage)",
-      "Volumes, networks, and Compose",
-      "Registry workflows and tagging",
-      "Docker in CI pipelines",
-      "From Compose to Kubernetes — the bridge",
-    ],
-    theme: "sage",
-  },
-  {
-    slug: "frontend-development",
-    title: "Frontend Development",
-    cert: "DevStarLabs Frontend Professional",
-    category: "development",
-    duration: "12 weeks",
-    format: "Live online + projects",
-    level: "Beginner",
-    outcome:
-      "Build and deploy production React applications with TypeScript, testing, and modern tooling.",
-    modules: [
-      "HTML, CSS, and responsive layout systems",
-      "JavaScript ES2023 and TypeScript",
-      "React: components, hooks, and state",
-      "Next.js: routing, data fetching, caching",
-      "Tailwind CSS and design systems",
-      "Testing with Vitest and Playwright",
-      "Capstone: ship a production app",
-    ],
-    theme: "orange",
-  },
-  {
-    slug: "full-stack-development",
-    title: "Full Stack Development",
-    cert: "DevStarLabs Full Stack Professional",
-    category: "development",
-    duration: "20 weeks",
-    format: "Live online + projects",
-    level: "Intermediate",
-    outcome:
-      "Design, build, and operate complete web products — frontend to database to deployment.",
-    modules: [
-      "Frontend foundation (React + Next.js)",
-      "APIs: REST, tRPC, and GraphQL",
-      "Databases: PostgreSQL, Prisma, migrations",
-      "Authentication and authorization",
-      "Payments and third-party integrations",
-      "Testing, CI/CD, and monitoring",
-      "Capstone: launch a SaaS product",
-    ],
-    theme: "steel",
-  },
-  {
-    slug: "generative-ai",
-    title: "Generative AI",
-    cert: "DevStarLabs GenAI Engineer",
-    category: "ai-data",
-    duration: "10 weeks",
-    format: "Live online + labs",
-    level: "Intermediate",
-    outcome:
-      "Build LLM-powered products: RAG pipelines, agents, and evaluations — in production, not just notebooks.",
-    modules: [
-      "LLM fundamentals: tokens, embeddings, context",
-      "Prompt engineering that survives production",
-      "RAG: chunking, vector stores, retrieval quality",
-      "Agents, tools, and function calling",
-      "Fine-tuning vs RAG — decision frameworks",
-      "Evals, guardrails, and cost management",
-      "Capstone: ship an AI feature",
-    ],
-    theme: "orange",
-  },
-  {
-    slug: "data-engineering",
-    title: "Data Engineering",
-    cert: "DevStarLabs Data Engineer",
-    category: "ai-data",
-    duration: "14 weeks",
-    format: "Live online + projects",
-    level: "Intermediate",
-    outcome:
-      "Design reliable pipelines and warehouses that analysts and ML systems trust.",
-    modules: [
-      "SQL deep-dive and query optimization",
-      "Batch pipelines with Airflow / Dagster",
-      "Streaming with Kafka fundamentals",
-      "Warehouses: BigQuery / Snowflake modeling",
-      "dbt: transformation layers and tests",
-      "Data quality, lineage, and contracts",
-      "Capstone: end-to-end platform build",
-    ],
-    theme: "sage",
-  },
-  {
-    slug: "machine-learning",
-    title: "Machine Learning",
-    cert: "DevStarLabs ML Engineer",
-    category: "ai-data",
-    duration: "14 weeks",
-    format: "Live online + projects",
-    level: "Advanced",
-    outcome:
-      "Train, evaluate, and deploy models with proper experiment tracking and MLOps discipline.",
-    modules: [
-      "ML math essentials: linear algebra, probability",
-      "Classical models and feature engineering",
-      "Deep learning with PyTorch",
-      "Model evaluation and error analysis",
-      "MLOps: tracking, registries, pipelines",
-      "Serving: batch vs real-time inference",
-      "Capstone: model to production endpoint",
-    ],
-    theme: "steel",
-  },
-  {
-    slug: "iot",
-    title: "IoT Engineering",
-    cert: "DevStarLabs IoT Specialist",
-    category: "ai-data",
-    duration: "10 weeks",
-    format: "Live online + hardware kit",
-    level: "Intermediate",
-    outcome:
-      "Build connected devices end to end: firmware, connectivity, cloud backends, and dashboards.",
-    modules: [
-      "Electronics essentials and microcontrollers",
-      "Embedded C++ / MicroPython firmware",
-      "Connectivity: MQTT, HTTP, LoRaWAN, BLE",
-      "Cloud ingestion and device management",
-      "Time-series data and dashboards",
-      "OTA updates and fleet security",
-      "Capstone: connected product prototype",
+      "HCL syntax, providers, resources & dynamic blocks",
+      "State management, remote backends & distributed locking",
+      "Module architecture, registry publishing & variable hierarchies",
+      "CI/CD automation with GitHub Actions & Terraform Cloud",
+      "Policy as Code with Sentinel & OPA",
+      "Disaster recovery and state drift remediation",
+      "Certification exam drill and practical lab test",
     ],
     theme: "sand",
   },
 ];
 
 /* ------------------------------------------------------------------ */
-/* SOCIAL PROOF                                                        */
+/* TEAM LEADERSHIP & STAKEHOLDERS                                     */
+/* ------------------------------------------------------------------ */
+
+export const TEAM_MEMBERS: TeamMember[] = [
+  {
+    name: "Manoj Kumar",
+    role: "Founder & Principal Architect",
+    specialty: "Distributed Systems · Cloud & AI",
+    bio: "Leads engineering architecture and client product engagements. 12+ years designing scalable cloud backends and AI systems.",
+    years: "12 yrs",
+    accent: "#f4793a",
+    email: "manoj@devstarlabs.cloud",
+  },
+  {
+    name: "Aiden Vance",
+    role: "Head of Product Design",
+    specialty: "UI/UX · Design Systems · WebGL",
+    bio: "Directs visual hierarchy, brand identity, and interactive 3D interfaces. Former lead designer for global SaaS and fintech platforms.",
+    years: "10 yrs",
+    accent: "#8498ac",
+    email: "aiden@devstarlabs.cloud",
+  },
+  {
+    name: "Siddharth Rao",
+    role: "Principal AI Engineer",
+    specialty: "LLM Workflows · RAG · Agents",
+    bio: "Specializes in multi-agent orchestration, pgvector pipelines, and high-throughput model serving infrastructure.",
+    years: "9 yrs",
+    accent: "#c5939d",
+    email: "siddharth@devstarlabs.cloud",
+  },
+  {
+    name: "Elena Rostova",
+    role: "Lead DevOps & Cloud Engineer",
+    specialty: "Kubernetes · Terraform · GitOps",
+    bio: "Architects high-availability multi-region clusters, automated CI/CD pipelines, and zero-downtime migration protocols.",
+    years: "11 yrs",
+    accent: "#8e9487",
+    email: "elena@devstarlabs.cloud",
+  },
+  {
+    name: "Marcus Chen",
+    role: "Staff Full-Stack Engineer",
+    specialty: "Next.js · React 19 · Node.js",
+    bio: "Focuses on sub-second rendering, edge hydration, and end-to-end type safety across enterprise web and mobile applications.",
+    years: "8 yrs",
+    accent: "#f4793a",
+    email: "marcus@devstarlabs.cloud",
+  },
+  {
+    name: "Amara Okonjo",
+    role: "Director of SEO & Growth",
+    specialty: "Technical SEO · CRO · Analytics",
+    bio: "Drives organic discovery architectures, schema modeling, and high-converting funnel optimization for client platforms.",
+    years: "9 yrs",
+    accent: "#8498ac",
+    email: "amara@devstarlabs.cloud",
+  },
+];
+
+// Backwards compatibility alias
+export const TRAINERS = TEAM_MEMBERS;
+export const TRAININGS = PROGRAMS;
+
+/* ------------------------------------------------------------------ */
+/* SOCIAL PROOF & STATS                                               */
 /* ------------------------------------------------------------------ */
 
 export const TESTIMONIALS: Testimonial[] = [
   {
     quote:
-      "DevStarLabs rebuilt our platform on Next.js and cut load times by 70%. The handover docs were so good our team took over in a week.",
+      "DevStarLabs built our enterprise platform on Next.js and cut latency by 75%. Their engineering rigor and communication are the best we have experienced.",
     name: "Ananya Rao",
-    role: "CTO, Fintech startup",
+    role: "CTO, Fintech Capital",
     flag: "🇮🇳",
   },
   {
     quote:
-      "I passed CKA on the first attempt. Their lab clusters feel exactly like the exam environment — timed drills make all the difference.",
-    name: "Marcus Lee",
-    role: "DevOps Engineer",
-    flag: "🇸🇬",
-  },
-  {
-    quote:
-      "They shipped our AI support agent in six weeks. Real evals, real guardrails — it actually reduced ticket volume by 40%.",
+      "They deployed our multi-agent AI triage system in four weeks. It immediately automated 60% of our manual compliance workload with zero hallucination issues.",
     name: "Sofia Marin",
-    role: "Head of Product, SaaS",
+    role: "Head of Product, Nexus",
     flag: "🇪🇸",
   },
   {
     quote:
-      "The Terraform course was the most practical training I've taken. We rewrote our whole infra as code the month after.",
+      "DevStarLabs' Kubernetes and cloud architecture migration was flawless. We now ship 10+ releases a day with 99.999% reliability.",
+    name: "Marcus Lee",
+    role: "VP of Engineering",
+    flag: "🇸🇬",
+  },
+  {
+    quote:
+      "The dedicated engineering program leveled up our entire backend team. The hands-on labs reflect real production scenarios.",
     name: "David Okafor",
-    role: "Platform Lead",
+    role: "Platform Director",
     flag: "🇳🇬",
   },
 ];
 
 export const STATS = [
-  { value: "120+", label: "Projects shipped" },
-  { value: "2,400+", label: "Engineers trained" },
-  { value: "94%", label: "Certification pass rate" },
-  { value: "14", label: "Countries served" },
+  { value: "140+", label: "Platforms & Systems Shipped" },
+  { value: "99.99%", label: "Average Infrastructure Uptime" },
+  { value: "10×", label: "Client Deployment Velocity" },
+  { value: "18", label: "Countries Served" },
 ];
 
-export const CATEGORY_LABELS: Record<Training["category"], string> = {
+export const CATEGORY_LABELS: Record<Program["category"], string> = {
   cloud: "Cloud",
   devops: "DevOps",
   development: "Development",
   "ai-data": "AI & Data",
 };
-
-/* ------------------------------------------------------------------ */
-/* TRAINERS                                                            */
-/* ------------------------------------------------------------------ */
-/* Placeholder roster — drop real headshots into /public/trainers/
-   and fill `photo: "/trainers/who.jpg"` plus name/role/specialty/bio.
-   The 3D card scene renders the photo automatically when present.    */
-
-export type Trainer = {
-  name: string;
-  role: string;
-  /** short line printed on the card front */
-  specialty: string;
-  /** flipped-side copy shown as the card rotates */
-  bio: string;
-  years: string;
-  accent: string;
-  photo?: string; // e.g. "/trainers/ananya.jpg"
-};
-
-export const TRAINERS: Trainer[] = [
-  {
-    name: "Trainer One",
-    role: "AWS & Cloud",
-    specialty: "Solutions Architect · 8× certs",
-    bio: "Runs the AWS track. Former cloud lead; has migrated 40+ workloads to AWS.",
-    years: "12 yrs",
-    accent: "#f4793a",
-  },
-  {
-    name: "Trainer Two",
-    role: "Kubernetes · CKA/CKAD",
-    specialty: "CKS · Cluster ops",
-    bio: "Teaches CKA/CKAD. Maintains the lab clusters students break and fix.",
-    years: "10 yrs",
-    accent: "#8498ac",
-  },
-  {
-    name: "Trainer Three",
-    role: "Terraform · DevOps",
-    specialty: "IaC · CI/CD pipelines",
-    bio: "Terraform Associate track. Believes every manual step is a future incident.",
-    years: "11 yrs",
-    accent: "#c5939d",
-  },
-  {
-    name: "Trainer Four",
-    role: "Frontend & Full Stack",
-    specialty: "React · Next.js · TS",
-    bio: "Frontend + full-stack mentor. Ships reviews the way staff engineers do.",
-    years: "9 yrs",
-    accent: "#8e9487",
-  },
-  {
-    name: "Trainer Five",
-    role: "AI & ML",
-    specialty: "LLMs · RAG · evals",
-    bio: "Generative AI and ML tracks. Obsessed with evals over vibes.",
-    years: "8 yrs",
-    accent: "#f4793a",
-  },
-  {
-    name: "Trainer Six",
-    role: "Data Eng & IoT",
-    specialty: "Pipelines · streaming",
-    bio: "Data engineering + IoT. From sensor to dashboard, one pipeline at a time.",
-    years: "13 yrs",
-    accent: "#8498ac",
-  },
-];

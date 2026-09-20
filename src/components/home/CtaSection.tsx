@@ -5,7 +5,7 @@ import StarSpin from "@/components/webgl/StarSpin";
 
 export default function CtaSection() {
   return (
-    <ThemeSection theme="orange" tilt className="overflow-hidden pb-20 pt-32">
+    <ThemeSection theme="orange" motion="sweep" contentClassName="overflow-hidden pb-20 pt-32">
       <div className="grid items-center gap-12 md:grid-cols-[1.3fr_1fr]">
         <div className="relative">
           <p className="display-hero max-md:!text-[clamp(72px,22vw,235px)] text-[var(--t-heading)]">

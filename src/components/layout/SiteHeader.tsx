@@ -4,22 +4,17 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { gsap } from "gsap";
-import Doodle from "@/components/system/Doodle";
 import HoverAccent from "@/components/system/HoverAccent";
 import LogoMark from "@/components/system/LogoMark";
 
-// follow.art's promo-header items, in its order. Hrefs marked TODO are
-// placeholders — placement of our existing pages comes from the user.
 const NAV = [
+  { href: "/services", label: "Services" },
+  { href: "/showcase", label: "Showcase" },
   { href: "/about", label: "About" },
-  { href: "#", label: "Our Product" }, // TODO
-  { href: "#", label: "Community Board" }, // TODO
-  { href: "#", label: "Pricing" }, // TODO
-  { href: "#", label: "FAQ" }, // TODO
+  { href: "/programs", label: "Programs" },
 ];
 const NAV_RIGHT = [
-  { href: "#", label: "Login" }, // TODO
-  { href: "/contact", label: "Join" },
+  { href: "/contact", label: "Contact" },
 ];
 
 /* Resolved color set the header adopts from the sheet it currently
@@ -33,8 +28,6 @@ type HeaderTheme = {
 };
 
 function resolveSectionTheme(section: Element): HeaderTheme {
-  // a throwaway probe inside the section resolves the section's --t-*
-  // tokens to real color values (CSS vars can't be read resolved)
   const probe = document.createElement("span");
   probe.setAttribute("aria-hidden", "true");
   probe.style.cssText =
@@ -58,7 +51,6 @@ function resolveSectionTheme(section: Element): HeaderTheme {
 export default function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  // theme of the sheet currently under the header band
   const [theme, setTheme] = useState<HeaderTheme | null>(null);
 
   useEffect(() => {
@@ -66,7 +58,7 @@ export default function SiteHeader() {
     let last: Element | null = null;
     const update = () => {
       raf = 0;
-      const band = 60; // middle of the header row
+      const band = 60;
       let target: Element | null = null;
       for (const s of document.querySelectorAll("main section, footer")) {
         const r = s.getBoundingClientRect();
@@ -89,11 +81,6 @@ export default function SiteHeader() {
     };
   }, [pathname]);
 
-  // close the menu on route change
-  useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
-
   // menu open/close animation + scroll lock
   useEffect(() => {
     const panel = document.getElementById("menu-panel");
@@ -105,146 +92,149 @@ export default function SiteHeader() {
         { yPercent: -100 },
         { yPercent: 0, duration: 0.6, ease: "power4.out" },
       );
-      document.documentElement.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
     } else {
       gsap.to(panel, {
         yPercent: -100,
         duration: 0.45,
-        ease: "power4.in",
+        ease: "power3.in",
         onComplete: () => {
           panel.style.visibility = "hidden";
         },
       });
-      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
     }
   }, [open]);
 
-  const headColor = theme?.heading ?? "var(--t-heading)";
-  const textColor = theme?.text ?? "var(--t-text)";
+  const closeMenu = () => setOpen(false);
 
-  // follow.art promo-header link: plain text + scribble hover; the current
-  // page keeps the black scribble drawn with a knocked-out white label
-  // (.btn.is-active in globals.css)
-  const renderNavLink = (item: { href: string; label: string }) => {
-    const active = item.href !== "#" && pathname.startsWith(item.href);
-    return (
-      <Link
-        key={item.label}
-        href={item.href}
-        aria-current={active ? "page" : undefined}
-        className={`btn btn--link btn--accent btn--text-smaller promo-header__animated-button${
-          active ? " is-active" : ""
-        }`}
-        style={active ? undefined : { color: textColor }}
-      >
-        {item.label}
-        <HoverAccent />
-      </Link>
-    );
-  };
-
-  // the header's bottom hairline draws itself in after load
-  // (follow.art .promo-header--border-auto:after)
-  const [lineShown, setLineShown] = useState(false);
-  useEffect(() => {
-    const t = window.setTimeout(() => setLineShown(true), 150);
-    return () => window.clearTimeout(t);
-  }, []);
+  const style: React.CSSProperties = theme
+    ? ({
+        "--t-text": theme.text,
+        "--t-heading": theme.heading,
+        "--t-accent": theme.accent,
+        "--t-line": theme.line,
+        color: theme.heading,
+      } as React.CSSProperties)
+    : { color: "var(--c-ink)" };
 
   return (
-    <header
-      className="promo-header"
-      style={{ color: headColor, paddingInline: "var(--page-spacing)" }}
-    >
-      {/* painted band in the underlying sheet's color — follow.art's
-          promo-header__previous-bg — keeps the bar readable over any
-          section (white over the orange hero, white over dark) */}
-      <div
-        className="promo-header__previous-bg"
-        style={{ backgroundColor: theme?.bg ?? "transparent" }}
-      />
-      <div className="promo-header__row">
-        <div
-          className={`promo-hairline${lineShown ? " promo-hairline--shown" : ""}`}
-          style={{ borderColor: theme?.line ?? "var(--t-line)" }}
-        />
-        <div className="promo-header__logo">
+    <>
+      <header
+        className="promo-header fixed top-0 left-0 z-50 w-full transition-colors duration-200 border-b border-[color:var(--t-line)]"
+        style={style}
+      >
+        <div className="promo-header__inner mx-auto flex max-w-7xl items-center justify-between px-[var(--page-spacing)] py-4">
           <Link
             href="/"
-            className="btn btn--link btn--accent btn--text-smaller"
-            style={{ color: headColor }}
-            aria-label="DevStarLabs home"
+            className="flex items-center gap-2.5 font-display text-2xl uppercase tracking-tighter"
+            aria-label="DevStarLabs homepage"
+            onClick={closeMenu}
           >
-            DEV
-            <LogoMark
-              idPrefix="hdr"
-              className="mx-1.5 inline-block h-[1.05em] w-auto align-[-0.12em]"
-            />
-            LABS
-            <HoverAccent />
+            <span className="font-display tracking-tight text-xl md:text-2xl">
+              Dev
+            </span>
+            <LogoMark className="size-7 text-[var(--c-orange)]" />
+            <span className="font-display tracking-tight text-xl md:text-2xl">
+              Lab
+            </span>
           </Link>
+
+          {/* Desktop Nav */}
+          <nav className="hidden items-center gap-8 md:flex">
+            {NAV.map((n) => {
+              const active = pathname.startsWith(n.href);
+              return (
+                <Link
+                  key={n.href}
+                  href={n.href}
+                  className={`btn btn--nav text-sm uppercase tracking-wider font-medium ${
+                    active ? "is-active font-bold" : ""
+                  }`}
+                >
+                  {n.label}
+                  <HoverAccent />
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* Desktop Right Nav Links */}
+          <div className="hidden items-center gap-6 md:flex">
+            {NAV_RIGHT.map((n) => {
+              const active = pathname.startsWith(n.href);
+              return (
+                <Link
+                  key={n.label}
+                  href={n.href}
+                  className={`btn btn--nav text-sm uppercase tracking-wider font-medium ${
+                    active ? "is-active font-bold" : ""
+                  }`}
+                >
+                  {n.label}
+                  <HoverAccent />
+                </Link>
+              );
+            })}
+          </div>
+
+          {/* Mobile hamburger */}
+          <button
+            type="button"
+            onClick={() => setOpen(!open)}
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-black/10 md:hidden"
+            aria-label="Toggle menu"
+          >
+            <span className="font-mono text-lg font-bold">{open ? "✕" : "☰"}</span>
+          </button>
         </div>
+      </header>
 
-        <nav className="promo-header__desktop-links max-[979px]:hidden" aria-label="Primary">
-          {NAV.map(renderNavLink)}
-        </nav>
-
-        <div className="promo-header__content-right promo-header__desktop-links max-[979px]:hidden">
-          {NAV_RIGHT.map(renderNavLink)}
-        </div>
-
-        <button
-          className="relative z-50 flex h-10 w-10 flex-col items-center justify-center gap-1.5 min-[980px]:hidden"
-          aria-expanded={open}
-          aria-controls="menu-panel"
-          aria-label={open ? "Close menu" : "Open menu"}
-          onClick={() => setOpen((v) => !v)}
-        >
-          <span
-            className="block h-0.5 w-7 transition-transform"
-            style={{
-              background: headColor,
-              transform: open ? "rotate(45deg) translateY(4px)" : "none",
-            }}
-          />
-          <span
-            className="block h-0.5 w-7 transition-transform"
-            style={{
-              background: headColor,
-              transform: open ? "rotate(-45deg) translateY(-4px)" : "none",
-            }}
-          />
-        </button>
-      </div>
-
-      {/* mobile menu panel */}
+      {/* Fullscreen Mobile Menu Panel */}
       <div
         id="menu-panel"
-        className="ui-dark sheet fixed inset-0 z-40 flex flex-col justify-between px-6 pb-10 pt-24 md:hidden"
-        style={{ visibility: "hidden", transform: "translateY(-100%)" }}
+        className="fixed inset-0 z-40 flex flex-col justify-between bg-[var(--c-ink)] p-8 pt-24 text-[var(--c-paper)] md:hidden"
+        style={{ visibility: "hidden" }}
       >
-        <nav className="flex flex-col gap-2" aria-label="Mobile">
-          {[...NAV, ...NAV_RIGHT].map((item, i) => (
+        <nav className="flex flex-col space-y-6">
+          <Link
+            href="/"
+            onClick={closeMenu}
+            className="font-display text-4xl uppercase tracking-tight hover:text-[var(--c-orange)]"
+          >
+            Home
+          </Link>
+          {NAV.map((n) => (
             <Link
-              key={item.label}
-              href={item.href}
-              className="display-sm no-underline"
-              style={{ color: "var(--t-heading)" }}
+              key={n.href}
+              href={n.href}
+              onClick={closeMenu}
+              className="font-display text-4xl uppercase tracking-tight hover:text-[var(--c-orange)]"
             >
-              <span className="mr-3 text-sm text-[var(--t-muted)]">
-                0{i + 1}
-              </span>
-              {item.label}
+              {n.label}
             </Link>
           ))}
+          <Link
+            href="/contact"
+            onClick={closeMenu}
+            className="font-display text-4xl uppercase tracking-tight hover:text-[var(--c-orange)]"
+          >
+            Contact
+          </Link>
         </nav>
-        <div className="flex items-end justify-between">
-          <p className="label text-[var(--t-muted)]">
-            Build. Ship. Scale.
+
+        <div className="border-t border-white/10 pt-6">
+          <p className="text-xs uppercase tracking-widest text-white/50">
+            DevStarLabs Studio &amp; AI Lab
           </p>
-          <Doodle name="star" className="w-10 text-[var(--c-orange)]" />
+          <a
+            href="mailto:manoj@devstarlabs.cloud"
+            className="mt-2 block font-display text-xl uppercase text-white hover:text-[var(--c-orange)]"
+          >
+            manoj@devstarlabs.cloud
+          </a>
         </div>
       </div>
-    </header>
+    </>
   );
 }

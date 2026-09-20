@@ -307,8 +307,6 @@ export default function HeroCardCarousel({ show }: { show: boolean }) {
 }
 
 function build(wrapper: HTMLElement, reduceMotion: boolean) {
-  const DPR = Math.min(window.devicePixelRatio || 1, 2);
-
   /* Their app factory multiplies the configured fov by a contain factor so
      the composition survives aspect changes:
        fov * (max(0, 1.8717948717948718 - aspect) * 0.5 + 1)

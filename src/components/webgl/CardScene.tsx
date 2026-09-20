@@ -6,6 +6,7 @@ import {
   useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
   type ReactNode,
 } from "react";
 import * as THREE from "three";
@@ -156,13 +157,23 @@ export function CurvedCard({
       rotation={[0, layout.rot, 0]}
     >
       <mesh geometry={geo}>
-        <meshStandardMaterial map={front} roughness={0.5} metalness={0.15} />
+        <meshStandardMaterial
+          map={front}
+          roughness={0.28}
+          metalness={0.32}
+          side={THREE.FrontSide}
+        />
       </mesh>
       {/* back face: own mesh rotated to face rearward; its front-side
           texture therefore reads correctly without mirroring. Offset in
           z so the two sheets never kiss at the rim. */}
       <mesh geometry={backGeo} rotation={[0, Math.PI, 0]} position={[0, 0, -0.01]}>
-        <meshStandardMaterial map={back} roughness={0.65} metalness={0.1} />
+        <meshStandardMaterial
+          map={back}
+          roughness={0.38}
+          metalness={0.24}
+          side={THREE.FrontSide}
+        />
       </mesh>
     </group>
   );
@@ -174,8 +185,8 @@ function Rig({ reduced }: { reduced: boolean }) {
   useFrame(({ camera, pointer }) => {
     if (reduced) return;
     const s = Math.min(1, Math.max(0, (window.scrollY || 0) / window.innerHeight));
-    camera.position.x += (pointer.x * 0.35 - camera.position.x) * 0.04;
-    camera.position.y += (pointer.y * 0.22 - camera.position.y) * 0.04;
+    camera.position.x += (pointer.x * 0.4 - camera.position.x) * 0.05;
+    camera.position.y += (pointer.y * 0.28 - camera.position.y) * 0.05;
     camera.position.z += (5.4 + s * 0.6 - camera.position.z) * 0.06;
     camera.lookAt(0, 0, 0);
   });
@@ -193,9 +204,10 @@ export function Scene({ children, active }: { children: ReactNode; active: boole
       camera={{ position: [0, 0, 5.4], fov: 42 }}
       style={{ background: "transparent" }}
     >
-      <ambientLight intensity={0.85} />
-      <directionalLight position={[4, 6, 6]} intensity={1.4} />
-      <pointLight position={[-5, -3, 4]} intensity={18} color="#ffd9c4" />
+      <ambientLight intensity={0.9} />
+      <directionalLight position={[4, 6, 6]} intensity={1.6} />
+      <directionalLight position={[-5, -4, 3]} intensity={0.8} color="#c5939d" />
+      <pointLight position={[0, 4, 3]} intensity={14} color="#ffffff" />
       {children}
       <Rig reduced={false} />
     </Canvas>
@@ -219,13 +231,22 @@ export function webglAvailable() {
 export function useCardScene(
   wrapperRef: React.RefObject<HTMLElement | null>,
 ): { mode: "static" | "webgl"; active: boolean } {
-  const [mode, setMode] = useState<"static" | "webgl">("static");
-  const [active, setActive] = useState(true);
+  const isClient = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
+  const reduced = useSyncExternalStore(
+    (onStoreChange) => {
+      const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+      mq.addEventListener?.("change", onStoreChange);
+      return () => mq.removeEventListener?.("change", onStoreChange);
+    },
+    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    () => false,
+  );
 
-  useEffect(() => {
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!reduced && webglAvailable()) setMode("webgl");
-  }, []);
+  const [active, setActive] = useState(true);
 
   useEffect(() => {
     const el = wrapperRef.current;
@@ -237,6 +258,8 @@ export function useCardScene(
     io.observe(el);
     return () => io.disconnect();
   }, [wrapperRef]);
+
+  const mode = isClient && !reduced && webglAvailable() ? "webgl" : "static";
 
   return { mode, active };
 }

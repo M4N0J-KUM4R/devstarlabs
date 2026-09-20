@@ -13,7 +13,7 @@ export default function Testimonials() {
   const next = () => setIndex((i) => (i + 1) % TESTIMONIALS.length);
 
   return (
-    <ThemeSection theme="steel" tilt className="overflow-hidden pb-24 pt-28">
+    <ThemeSection theme="steel" motion="sweep" contentClassName="overflow-hidden pb-24 pt-28">
       <div className="relative select-none" aria-hidden="true">
         <p className="display-xl display-crop text-[var(--t-heading)] opacity-90">
           Said about

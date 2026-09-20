@@ -5,7 +5,7 @@ import Doodle from "@/components/system/Doodle";
 /** The Lab — mentorship & hands-on learning culture (ink sheet). */
 export default function Lab() {
   return (
-    <ThemeSection theme="dark" tiltRight className="overflow-hidden pb-24 pt-28">
+    <ThemeSection theme="dark" motion="sweep" contentClassName="overflow-hidden pb-24 pt-28">
       <DisplayWordmark size="lg" align="right" className="max-md:!text-[clamp(40px,9.5vw,90px)]">
         The Lab
       </DisplayWordmark>

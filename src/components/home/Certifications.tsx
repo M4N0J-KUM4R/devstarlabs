@@ -7,7 +7,7 @@ import FillButton from "@/components/system/FillButton";
 import { TRAININGS, CATEGORY_LABELS } from "@/data/content";
 
 const MARQUEE = TRAININGS.map((t) => (
-  <span className="font-display mx-6 flex items-center gap-3 text-[clamp(22px,3vw,40px)] uppercase">
+  <span key={t.slug} className="font-display mx-6 flex items-center gap-3 text-[clamp(22px,3vw,40px)] uppercase">
     <span className="text-[var(--c-orange)]">★</span>
     {t.title}
   </span>
@@ -15,7 +15,7 @@ const MARQUEE = TRAININGS.map((t) => (
 
 export default function Certifications() {
   return (
-    <ThemeSection theme="sage" tiltRight className="pb-24 pt-28">
+    <ThemeSection theme="sage" motion="sweep" contentClassName="pb-24 pt-28">
       <div className="ed items-end">
         <DisplayWordmark size="lg" className="max-md:!text-[clamp(40px,9.5vw,92px)]">
           Certification training
@@ -40,7 +40,7 @@ export default function Certifications() {
         {TRAININGS.map((t, i) => (
           <Link
             key={t.slug}
-            href={`/trainings/${t.slug}`}
+            href="/our-product"
             className="group flex flex-col rounded-2xl p-6 no-underline transition-transform hover:-translate-y-1"
             style={{
               background: "rgba(var(--c-ink-rgb),0.9)",
@@ -79,8 +79,8 @@ export default function Certifications() {
       </div>
 
       <div className="mt-12 flex flex-wrap items-center gap-6">
-        <FillButton href="/trainings" variant="outline">
-          Browse all 11 tracks
+        <FillButton href="/pricing" variant="outline">
+          Browse membership plans
         </FillButton>
         <div className="flex items-center gap-3 text-sm text-[var(--t-text)]">
           <Doodle name="spark" className="w-6 text-[var(--c-orange)]" />

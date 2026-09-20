@@ -435,6 +435,55 @@ body {
   z-index: 1;
 }
 
+/* layered sweep sheet — the reference's stacked-paper construction,
+   measured off the live site: every page sheet is a sticky layer
+   pinned to the TOP of the viewport (`.section__layer--sticky`,
+   top:0) inside a section that hands exactly one viewport of scroll
+   to the next sheet (sections overlap by 100svh). The layer carries
+   the section's color AND its content as one block, so the
+   background travels with the words, and rests at
+   translateX(124px) rotate(15deg) about the top-left corner — the
+   reference's measured resting matrix — easing level through
+   --sheet-progress (written by PageMotion: 1 = fully tilted,
+   0 = settled level, also the no-JS default) as it rises: the
+   rotation drops the top edge below the fold, exposing the
+   stacked-paper wedge at the top and along the side. The tail
+   spacer below the layer is the pin range: while the NEXT sheet
+   sweeps in, this layer stays pinned, its color filling the gaps.
+   Layers taller than the viewport get a negative sticky top from
+   PageMotion so their content scrolls through first (the reference
+   pins its CARD section at top:-575px the same way). */
+.sheet--sweep {
+  /* pin range below the layer — variable per section (Showcase uses
+     200svh for its card-fan). The entry overlap is NOT derived from
+     this: every sheet enters over exactly one viewport of the previous
+     one (measured off the reference), regardless of tail length. */
+  --sweep-tail: 100svh;
+  margin-top: -100svh;
+  /* gutters live on .sheet__content so the layer bleeds full-width */
+  padding-inline: 0;
+  background: transparent;
+  transform: none;
+  transform-origin: auto;
+}
+.sheet--sweep .sheet__layer {
+  position: sticky;
+  top: 0; /* lowered by PageMotion when the layer is taller than the viewport */
+  min-height: 100svh;
+  background: var(--t-bg);
+  transform-origin: 0 0;
+  transform: translateX(calc(var(--scale-px) * 124.5 * var(--sheet-progress, 0)))
+    rotate(calc(15deg * var(--sheet-progress, 0)));
+  /* no will-change here: promoting the sheet to its own compositing
+     layer makes it paint over content in some engines */
+}
+.sheet--sweep .sheet__content {
+  padding-inline: var(--page-spacing);
+}
+.sheet--sweep .sheet__tail {
+  height: var(--sweep-tail);
+}
+
 .hairline {
   border-top: 1px solid var(--t-line);
 }
@@ -509,6 +558,13 @@ hr {
   align-items: center;
   gap: calc(var(--page-spacing) * 2); /* follow.art: --spacing*2 */
 }
+/* the mobile hide must live here, not in a Tailwind utility: this
+   unlayered display:flex beats layered utilities in the cascade */
+@media (max-width: 979px) {
+  .promo-header__desktop-links {
+    display: none;
+  }
+}
 
 .promo-header__content-right {
   display: flex;
@@ -566,15 +622,217 @@ hr {
   bottom: 0;
   border-left: 1px solid var(--t-line);
 }
-@media (max-width: 820px) {
-  .ed {
+/* ============================================================
+   SECTION 4 (CENTRALIZE) — follow.art Section 4 layout & 3D cards
+   ============================================================ */
+
+.section-4 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(var(--scale-px) * 20);
+  align-items: stretch;
+  position: relative;
+}
+@media (max-width: 979px) {
+  .section-4 {
     grid-template-columns: 1fr;
-    gap: calc(var(--scale-px) * 20);
+    gap: calc(var(--scale-px) * 24);
   }
-  .ed .col-divider::before,
-  .ed > :nth-child(2)::before {
-    display: none;
+}
+
+.section-4__content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.section-4__title {
+  font-family: var(--font-hardbop), "Arial Narrow", sans-serif;
+  font-size: calc(var(--scale-px) * 225);
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 0.79;
+  letter-spacing: normal;
+  color: var(--t-heading);
+}
+@media (max-width: 979px) {
+  .section-4__title {
+    font-size: clamp(56px, 18vw, 140px);
   }
+}
+
+.section-4__title-word--inline-block {
+  display: inline-block;
+}
+
+/* follow.art renders the wordmark on a single line: inline-flex, not block flex */
+.section-4__title-word {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+}
+
+/* hand-drawn star doodle overlapping the top-right end of the wordmark */
+.section-4__title-word-decoration {
+  position: absolute;
+  width: calc(var(--scale-px) * 84);
+  height: calc(var(--scale-px) * 80);
+  right: calc(var(--scale-px) * 44);
+  top: calc(var(--scale-px) * 55);
+  transform: rotate(-10deg);
+}
+
+.section-4__content-texts {
+  margin-top: calc(var(--scale-px) * 190);
+}
+
+.section-4__description {
+  font-family: var(--font-body), "Helvetica Neue", Arial, sans-serif;
+  font-size: calc(var(--scale-px) * 26);
+  line-height: 30px;
+  letter-spacing: -0.01em;
+  color: var(--t-text);
+  max-width: calc(var(--scale-px) * 320);
+  margin-left: auto;
+  margin-right: calc(var(--scale-px) * 20);
+}
+@media (max-width: 979px) {
+  .section-4__description {
+    font-size: 18px;
+    line-height: 1.3;
+    max-width: 32ch;
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+/* hand-drawn ink underline under "No more" — black on the sage sheet */
+.section-4__description .underline-hand::after {
+  background: var(--t-heading);
+  height: calc(var(--scale-px) * 4);
+  border-radius: 0;
+}
+
+.section-4__cards-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* orange painted brush cross behind the card grid */
+.section-4__cards-wrapper-decoration {
+  position: absolute;
+  top: calc(var(--scale-px) * 107);
+  left: calc(var(--scale-px) * 52);
+  width: calc(var(--scale-px) * 587);
+  height: calc(var(--scale-px) * 587);
+  pointer-events: none;
+  z-index: 0;
+}
+.section-4__cards-wrapper-decoration img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.section-4__cards {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: calc(var(--scale-px) * 20);
+  padding-left: calc(var(--scale-px) * 118);
+  padding-right: calc(var(--scale-px) * 118);
+  position: relative;
+  z-index: 1;
+  align-self: center;
+  width: 100%;
+}
+@media (max-width: 979px) {
+  .section-4__cards {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+.section-4__card {
+  position: relative;
+  width: 100%;
+  height: calc(var(--scale-px) * 256);
+  cursor: pointer;
+  perspective: 1000px;
+}
+@media (max-width: 979px) {
+  .section-4__card {
+    height: 180px;
+  }
+}
+
+.section-4__card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: left;
+  transition: transform 0.8s cubic-bezier(0.55, 0, 0.1, 1);
+  transform-style: preserve-3d;
+}
+
+.section-4__card:hover .section-4__card-inner {
+  transform: rotateY(180deg);
+}
+
+.section-4__card-front,
+.section-4__card-back {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: calc(var(--scale-px) * 20);
+  background: var(--c-ink);
+  color: var(--c-paper);
+  border: none;
+  border-radius: 0;
+}
+
+.section-4__card-back {
+  transform: rotateY(180deg);
+  background: #111111;
+}
+
+.section-4__card-front .text-smaller,
+.section-4__card-back .text-smaller {
+  font-family: var(--font-body), "Helvetica Neue", Arial, sans-serif;
+  font-size: calc(var(--scale-px) * 13);
+  line-height: calc(var(--scale-px) * 16);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.section-4__card-front .text-small {
+  font-family: var(--font-body), "Helvetica Neue", Arial, sans-serif;
+  font-size: calc(var(--scale-px) * 20);
+  line-height: calc(var(--scale-px) * 25);
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--c-paper);
+  text-align: left;
+}
+
+.section-4__card-back .text-small {
+  font-family: var(--font-body), "Helvetica Neue", Arial, sans-serif;
+  font-size: calc(var(--scale-px) * 16);
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: rgba(255, 255, 255, 0.9);
+  text-align: left;
+  max-width: none;
 }
 
 /* ============================================================
@@ -687,20 +945,8 @@ hr {
   }
 }
 
-/* lenis recommended styles */
-html.lenis,
-html.lenis body {
-  height: auto;
-}
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
-}
-.lenis.lenis-smooth [data-lenis-prevent] {
-  overscroll-behavior: contain;
-}
-.lenis.lenis-stopped {
-  overflow: hidden;
-}
+/* Lenis html/body states come from the official lenis/dist/lenis.css,
+   imported in SmoothScroll per the Lenis README */
 
 /* ---- hero card carousel (Landing1IntroWebGl port) --------------------
    Two stacked WebGL canvases: the back scene slides in UNDER the

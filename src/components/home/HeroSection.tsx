@@ -21,7 +21,7 @@ const useIsoLayoutEffect =
   typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 export default function HeroSection() {
-  const wordRef = useRef<HTMLDivElement | null>(null);
+  const wordRef = useRef<HTMLHeadingElement | null>(null);
   const [showWord, setShowWord] = useState(false);
   const [loader, setLoader] = useState<"on" | "fading" | "off">("on");
 
@@ -183,7 +183,7 @@ export default function HeroSection() {
      The sticky wrapper is a plain div — .sheet's unlayered
      position:relative would override the sticky utility. */
   return (
-    <div className="relative -mb-[100svh]">
+    <div className="relative">
       {/* sticky creates a stacking context, so the loader-covering z lift
           must sit HERE to outrank the fixed header's z-index:10 */}
       <div
@@ -194,25 +194,24 @@ export default function HeroSection() {
         {/* while the intro loader is up, the section paints above the
             header so the loading screen covers the chrome too */}
         <section className="ui-orange sheet isolate flex min-h-[100svh] flex-col overflow-hidden">
-          <h1 className="sr-only">
-            DevStarLabs — software studio and certification training lab
-          </h1>
-
           {/* rotating card carousel — two stacked WebGL scenes: the back
               half renders under the wordmark, the front half over it */}
           <HeroCardCarousel show={showWord} />
 
           {/* interactive wordmark — one hand-set SVG, FOLLOW.ART .title pattern */}
-          <div
+          <h1
             ref={wordRef}
-            aria-hidden="true"
-            className="relative select-none pt-[calc(var(--scale-px)*110)] lg:pt-[calc(var(--scale-px)*60)]"
+            className="relative select-none pt-[calc(var(--scale-px)*110)] lg:pt-[calc(var(--scale-px)*60)] font-display text-[calc(var(--scale-px)*235)] uppercase leading-[0.8] text-[var(--c-paper)]"
           >
+            <span className="sr-only">
+              DevStarLabs — software studio and AI engineering lab
+            </span>
             <svg
               className="hero-word-svg hidden lg:block transition-transform duration-[1500ms] [transition-timing-function:cubic-bezier(.55,0,.1,1)]"
               style={entrance}
               viewBox={HERO_WORD.viewBox}
               focusable="false"
+              aria-hidden="true"
             >
               {HERO_WORD.glyphs.map((glyph, i) => (
                 <g
@@ -261,7 +260,7 @@ export default function HeroSection() {
                 showWord ? "opacity-90" : "opacity-0"
               }`}
             />
-          </div>
+          </h1>
 
           {/* value prop — slides up into place with the word (intro__footer);
               the bottom padding clears the fixed Join bar pinned over it */}
@@ -315,11 +314,11 @@ export default function HeroSection() {
         </section>
       </div>
 
-      {/* the scroll the hero stays pinned through while the next sheet
-          covers it. The extra 96px pays for the incoming sheet's tilt-top
-          (its -56px pull-in plus the rotation rise) so its edge rests just
-          BELOW the fold at scroll 0 instead of peeking over the hero. */}
-      <div aria-hidden="true" className="h-[calc(100svh_+_var(--scale-px)*96)]" />
+      {/* one viewport of pin range — the reference's exact geometry:
+          hero wrapper = layer + 100svh tail, and the next sweep sheet's
+          -100svh margin puts its resting tilted edge precisely at the
+          fold, sloping DOWN-right so nothing peeks over the hero */}
+      <div aria-hidden="true" className="h-[100svh]" />
     </div>
   );
 }
