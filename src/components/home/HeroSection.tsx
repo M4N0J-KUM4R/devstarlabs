@@ -14,6 +14,12 @@ const LOADING_MS = 2200; // loader hold: one full doodle cycle
 const LOADER_FADE_MS = 400;
 const INTRO_SEEN_KEY = "dsl-intro-seen";
 
+/* Fired the moment the intro loader starts fading — the same instant
+   follow.art flips its PromoHeader `loading` prop, which is what lets
+   the header bar slide down as the loading sheet clears (SiteHeader
+   listens for this to add promo--loaded). */
+export const LOADER_FADE_EVENT = "dsl:loaded";
+
 const ENTRANCE_REST = "translateY(0) scaleY(1)";
 const ENTRANCE_START = "translateY(-80%) scaleY(0)";
 
@@ -39,7 +45,14 @@ export default function HeroSection() {
     if (reduced || seen) {
       setLoader("off");
       window.setTimeout(() => setShowWord(true), 60);
-      return;
+      /* no loader this session — the bar is loaded from the first paint.
+         Deferred a tick so SiteHeader's listener (a passive effect from
+         the same commit) is attached before the event lands. */
+      const t = window.setTimeout(
+        () => window.dispatchEvent(new CustomEvent(LOADER_FADE_EVENT)),
+        0,
+      );
+      return () => window.clearTimeout(t);
     }
     /* flag is written when the intro finishes, not on start — Strict
        Mode's double effect run would otherwise play, clean up, then
@@ -49,6 +62,7 @@ export default function HeroSection() {
       window.setTimeout(() => {
         setShowWord(true);
         setLoader("fading");
+        window.dispatchEvent(new CustomEvent(LOADER_FADE_EVENT));
       }, LOADING_MS),
       window.setTimeout(
         () => {
@@ -193,7 +207,10 @@ export default function HeroSection() {
       >
         {/* while the intro loader is up, the section paints above the
             header so the loading screen covers the chrome too */}
-        <section className="ui-orange sheet isolate flex min-h-[100svh] flex-col overflow-hidden">
+        <section
+          data-page-header-theme="orange"
+          className="ui-orange sheet isolate flex min-h-[100svh] flex-col overflow-hidden"
+        >
           {/* rotating card carousel — two stacked WebGL scenes: the back
               half renders under the wordmark, the front half over it */}
           <HeroCardCarousel show={showWord} />

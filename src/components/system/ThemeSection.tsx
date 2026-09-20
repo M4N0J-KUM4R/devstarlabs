@@ -53,6 +53,7 @@ export default function ThemeSection({
         id={id}
         style={style}
         data-motion={motion}
+        data-page-header-theme={theme}
         className={`sheet ui-${theme} sheet--sweep ${className}`}
       >
         <div className="sheet__layer">
@@ -68,6 +69,7 @@ export default function ThemeSection({
       id={id}
       style={style}
       data-motion={motion}
+      data-page-header-theme={theme}
       className={`sheet ui-${theme} ${tiltClass} ${className}`}
     >
       {children}

@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import HoverAccent from "@/components/system/HoverAccent";
+import { LOADER_FADE_EVENT } from "@/components/home/HeroSection";
 
 /* follow.art's exact nav: five center links, Login + Join on the right.
    The Join pill is the .btn--pill filled action. */
@@ -17,7 +18,11 @@ const NAV = [
 ];
 
 /* Resolved color set the header adopts from the sheet it currently
-   floats over — follow.art's data-page-header-theme mechanism. */
+   floats over — follow.art's data-page-header-theme mechanism. Their
+   PromoHeader swaps a ui-<theme> class whose token block restyles it;
+   here every painted section declares the same attribute and the
+   header copies that section's resolved tokens, so the bar always
+   matches the sheet under it (solid — never transparent). */
 type HeaderTheme = {
   bg: string;
   text: string;
@@ -26,7 +31,7 @@ type HeaderTheme = {
   line: string;
 };
 
-function resolveSectionTheme(section: Element): HeaderTheme {
+function resolveSectionTheme(section: Element): HeaderTheme | null {
   const probe = document.createElement("span");
   probe.setAttribute("aria-hidden", "true");
   probe.style.cssText =
@@ -37,13 +42,17 @@ function resolveSectionTheme(section: Element): HeaderTheme {
     return getComputedStyle(probe).color;
   };
   const theme = {
-    bg: getComputedStyle(section).backgroundColor,
+    bg: read("var(--t-bg, var(--t-background))"),
     text: read("var(--t-text)"),
     heading: read("var(--t-heading)"),
     accent: read("var(--t-accent)"),
     line: read("var(--t-line)"),
   };
   probe.remove();
+  /* a sheet that paints nothing (transparent sweep wrapper without a
+     token block) must not blank the bar — report it back so the caller
+     keeps the previous theme instead */
+  if (theme.bg === "rgba(0, 0, 0, 0)") return null;
   return theme;
 }
 
@@ -51,7 +60,44 @@ export default function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [theme, setTheme] = useState<HeaderTheme | null>(null);
+  const isHome = pathname === "/";
 
+  /* follow.art PagePromoHeader: every page they render mounts the bar
+     --expanded — the landing passes default-expanded, and their live
+     /about SSR ships promo-header--expanded too, so the hairline is
+     simply always drawn (no scroll watcher anywhere). The bar carries
+     --border-auto (their border="auto" default, draw-in arm) on the
+     landing and --border (border=true, plain block) on sub-pages,
+     exactly as their SSR class lists show. */
+  const expanded = true;
+
+  /* promo--loaded entrance: the landing mounts the bar with
+     has-loading-state (lifted off-screen) and flips it once the intro
+     loader starts fading — the same loading prop drives both their
+     LoadingScreen and this class. The flip is managed as a plain class
+     toggle on the element (an external system, like Vue's class bind
+     in theirs): React's className prop stays stable on the landing, so
+     hand-set classes survive re-renders. HeroSection dispatches
+     LOADER_FADE_EVENT at the exact loader-fade moment; the safety
+     timer only guards a missed event. */
+  const headerRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    if (!isHome) return;
+    const el = headerRef.current;
+    if (!el) return;
+    el.classList.remove("promo--loaded"); /* re-arm on arrival */
+    const show = () => el.classList.add("promo--loaded");
+    window.addEventListener(LOADER_FADE_EVENT, show);
+    const safety = window.setTimeout(show, 4500);
+    return () => {
+      window.removeEventListener(LOADER_FADE_EVENT, show);
+      window.clearTimeout(safety);
+    };
+  }, [isHome]);
+
+  /* theme sync — last themed sheet covering the top band wins; sheets
+     without paint keep the previous theme (their crossfade behaviour) */
   useEffect(() => {
     let raf = 0;
     let last: Element | null = null;
@@ -59,13 +105,14 @@ export default function SiteHeader() {
       raf = 0;
       const band = 60;
       let target: Element | null = null;
-      for (const s of document.querySelectorAll("main section, footer")) {
+      for (const s of document.querySelectorAll("[data-page-header-theme]")) {
         const r = s.getBoundingClientRect();
         if (r.top <= band && r.bottom > band) target = s;
       }
       if (!target || target === last) return;
       last = target;
-      setTheme(resolveSectionTheme(target));
+      const next = resolveSectionTheme(target);
+      if (next) setTheme(next);
     };
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(update);
@@ -107,8 +154,9 @@ export default function SiteHeader() {
 
   const closeMenu = () => setOpen(false);
 
-  /* follow.art's header paints itself with the sheet colour it floats
-     over (solid, never transparent) and draws a 1px --t-line bottom. */
+  /* the header paints itself with the sheet colour it floats over
+     (solid, never transparent); the hairline comes from CSS via the
+     --border-auto/--expanded classes */
   const style: React.CSSProperties = theme
     ? ({
         "--t-text": theme.text,
@@ -123,95 +171,110 @@ export default function SiteHeader() {
         color: "var(--c-ink)",
       } as React.CSSProperties);
 
+  const headerClass = [
+    "promo-header",
+    /* entrance classes exist only on the landing — their sub-pages ship
+       neither has-loading-state nor a hidden phase (live /about SSR) */
+    isHome && "promo--has-loading-state",
+    isHome ? "promo-header--border-auto" : "promo-header--border",
+    expanded && "promo-header--expanded",
+    "fixed top-0 left-0 z-30 w-full",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
     <>
-      <header
-        className="promo-header fixed top-0 left-0 z-30 w-full"
-        style={style}
-      >
-        <div className="promo-header__inner mx-auto flex max-w-[1720px] items-center justify-between gap-6 px-[var(--page-spacing)]">
-          <Link
-            href="/"
-            className="flex shrink-0 items-center gap-2 no-underline"
-            aria-label="DevStarLabs homepage"
-            onClick={closeMenu}
-          >
-            <span className="font-display text-[19px] uppercase leading-none tracking-tight">
-              DevStar
-            </span>
-            <span className="font-display text-[19px] uppercase leading-none tracking-tight text-[var(--c-orange)]">
-              .
-            </span>
-            <span className="font-display text-[19px] uppercase leading-none tracking-tight">
-              Labs
-            </span>
-            <span className="promo-header__logo-sub ml-1 hidden xl:block">
-              One Practice. One Card.
-            </span>
-          </Link>
+      <header ref={headerRef} className={headerClass} style={style}>
+        <div className="promo-header__row">
+          <div className="mx-auto flex h-full w-full max-w-[1720px] items-center justify-between gap-6 px-[var(--page-spacing)]">
+            <div className="promo-header__logo shrink-0">
+              <Link
+                href="/"
+                className="flex items-center gap-2 no-underline"
+                aria-label="DevStarLabs homepage"
+                onClick={closeMenu}
+              >
+                <span className="font-display text-[19px] uppercase leading-none tracking-tight">
+                  DevStar
+                </span>
+                <span className="font-display text-[19px] uppercase leading-none tracking-tight text-[var(--c-orange)]">
+                  .
+                </span>
+                <span className="font-display text-[19px] uppercase leading-none tracking-tight">
+                  Labs
+                </span>
+              </Link>
+              <p className="promo-header__logo-text">
+                One Practice. One Card
+              </p>
+            </div>
 
-          {/* Desktop Nav — original's centered group */}
-          <nav className="hidden items-center gap-7 lg:flex">
-            {NAV.map((n) => {
-              const active = pathname.startsWith(n.href);
-              return (
-                <Link
-                  key={n.href}
-                  href={n.href}
-                  className={`btn btn--nav text-sm normal-case tracking-normal ${
-                    active ? "is-active" : ""
-                  }`}
-                >
-                  {n.label}
-                  <HoverAccent />
-                </Link>
-              );
-            })}
-          </nav>
+            {/* Desktop Nav — original's centered group */}
+            <nav className="promo-header__desktop-links hidden items-center gap-7 lg:flex">
+              {NAV.map((n) => {
+                const active = pathname.startsWith(n.href);
+                return (
+                  <Link
+                    key={n.href}
+                    href={n.href}
+                    className={`btn btn--nav text-sm normal-case tracking-normal ${
+                      active ? "is-active" : ""
+                    }`}
+                  >
+                    {n.label}
+                    <HoverAccent />
+                  </Link>
+                );
+              })}
+            </nav>
 
-          {/* Desktop right — Login text + Join filled pill */}
-          <div className="hidden shrink-0 items-center gap-7 lg:flex">
-            <Link
-              href="/signin"
-              className={`btn btn--nav text-sm normal-case tracking-normal ${
-                pathname.startsWith("/signin") ? "is-active" : ""
-              }`}
+            {/* Desktop right — Login text + Join filled pill */}
+            <div className="promo-header__content-right hidden shrink-0 items-center gap-7 lg:flex">
+              <Link
+                href="/signin"
+                className={`btn btn--nav text-sm normal-case tracking-normal ${
+                  pathname.startsWith("/signin") ? "is-active" : ""
+                }`}
+              >
+                Login
+                <HoverAccent />
+              </Link>
+              <Link
+                href="/signup"
+                className={`btn btn--nav text-sm normal-case tracking-normal ${
+                  pathname.startsWith("/signup") ? "is-active" : ""
+                }`}
+              >
+                Join
+                <HoverAccent />
+              </Link>
+            </div>
+
+            {/* Mobile hamburger */}
+            <button
+              type="button"
+              onClick={() => setOpen(!open)}
+              className="flex h-10 w-10 items-center justify-center lg:hidden"
+              aria-label="Toggle menu"
+              style={{ color: "inherit" }}
             >
-              Login
-              <HoverAccent />
-            </Link>
-            <Link
-              href="/signup"
-              className="btn btn--pill btn--solid text-sm normal-case tracking-normal"
-            >
-              Join
-              <HoverAccent />
-            </Link>
+              <span className="relative block h-3 w-5">
+                <span
+                  className="absolute left-0 top-0 block h-px w-full"
+                  style={{ background: "currentColor" }}
+                />
+                <span
+                  className="absolute left-0 top-1.5 block h-px w-full"
+                  style={{ background: "currentColor" }}
+                />
+                <span
+                  className="absolute left-0 top-3 block h-px w-full"
+                  style={{ background: "currentColor" }}
+                />
+              </span>
+            </button>
           </div>
-
-          {/* Mobile hamburger */}
-          <button
-            type="button"
-            onClick={() => setOpen(!open)}
-            className="flex h-10 w-10 items-center justify-center lg:hidden"
-            aria-label="Toggle menu"
-            style={{ color: "inherit" }}
-          >
-            <span className="relative block h-3 w-5">
-              <span
-                className="absolute left-0 top-0 block h-px w-full"
-                style={{ background: "currentColor" }}
-              />
-              <span
-                className="absolute left-0 top-1.5 block h-px w-full"
-                style={{ background: "currentColor" }}
-              />
-              <span
-                className="absolute left-0 top-3 block h-px w-full"
-                style={{ background: "currentColor" }}
-              />
-            </span>
-          </button>
         </div>
       </header>
 
