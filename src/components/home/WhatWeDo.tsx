@@ -13,7 +13,7 @@ export default function WhatWeDo() {
       motion="sweep"
       contentClassName="relative overflow-hidden pb-24 pt-28 md:pt-32"
     >
-      <div className="relative z-10">
+      <div className="relative">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
             <span className="label block uppercase tracking-widest text-[var(--t-muted)]">

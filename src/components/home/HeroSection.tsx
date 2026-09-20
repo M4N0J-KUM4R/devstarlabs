@@ -188,7 +188,7 @@ export default function HeroSection() {
           must sit HERE to outrank the fixed header's z-index:10 */}
       <div
         className={`sticky top-0 min-h-[100svh] ${
-          loader !== "off" ? "z-[60]" : ""
+          loader !== "off" ? "z-[110]" : ""
         }`}
       >
         {/* while the intro loader is up, the section paints above the
@@ -291,7 +291,7 @@ export default function HeroSection() {
             <div
               id="dsl-loader"
               aria-hidden="true"
-              className={`fixed inset-0 z-[90] bg-[var(--t-bg)] transition-opacity duration-[400ms] [transition-timing-function:cubic-bezier(.25,.74,.22,.99)] ${
+              className={`fixed inset-0 z-[120] bg-[var(--t-bg)] transition-opacity duration-[400ms] [transition-timing-function:cubic-bezier(.25,.74,.22,.99)] ${
                 loader === "fading"
                   ? "pointer-events-none opacity-0"
                   : "opacity-100"

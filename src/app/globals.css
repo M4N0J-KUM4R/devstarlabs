@@ -465,6 +465,10 @@ body {
   background: transparent;
   transform: none;
   transform-origin: auto;
+  /* contain the stacking context created by the sticky+transform
+     .sheet__layer — without this, children at z-index:10 compete
+     with the fixed header (also z-index based) */
+  isolation: isolate;
 }
 .sheet--sweep .sheet__layer {
   position: sticky;
@@ -524,7 +528,7 @@ hr {
   left: 0;
   top: 0;
   width: 100%;
-  z-index: 10;
+  z-index: 100;
 }
 
 .promo-header__previous-bg {

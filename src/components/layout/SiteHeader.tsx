@@ -121,7 +121,7 @@ export default function SiteHeader() {
   return (
     <>
       <header
-        className="promo-header fixed top-0 left-0 z-50 w-full transition-colors duration-200 border-b border-[color:var(--t-line)]"
+        className="promo-header fixed top-0 left-0 w-full transition-colors duration-200 border-b border-[color:var(--t-line)]"
         style={style}
       >
         <div className="promo-header__inner mx-auto flex max-w-7xl items-center justify-between px-[var(--page-spacing)] py-4">
