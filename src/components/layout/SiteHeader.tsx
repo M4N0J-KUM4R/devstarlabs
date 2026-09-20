@@ -185,52 +185,74 @@ export default function SiteHeader() {
 
   return (
     <>
-      <header ref={headerRef} className={headerClass} style={style}>
-        <div className="promo-header__row">
-          <div className="mx-auto flex h-full w-full max-w-[1720px] items-center justify-between gap-6 px-[var(--page-spacing)]">
-            <div className="promo-header__logo shrink-0">
-              <Link
-                href="/"
-                className="flex items-center gap-2 no-underline"
-                aria-label="DevStarLabs homepage"
-                onClick={closeMenu}
-              >
-                <span className="font-display text-[19px] uppercase leading-none tracking-tight">
-                  DevStar
-                </span>
-                <span className="font-display text-[19px] uppercase leading-none tracking-tight text-[var(--c-orange)]">
-                  .
-                </span>
-                <span className="font-display text-[19px] uppercase leading-none tracking-tight">
-                  Labs
-                </span>
-              </Link>
-              <p className="promo-header__logo-text">
-                One Practice. One Card
-              </p>
-            </div>
+      {/* px on the bar itself = their .px-1 (one --page-spacing each side);
+          the hairline :after still spans the full viewport because it is
+          absolutely positioned against the padding box edge */}
+      <header
+        ref={headerRef}
+        className={`${headerClass} px-[var(--page-spacing)]`}
+        style={style}
+      >
+        {/* their row = .row.row--gx.row--middle promo-header__row: a
+            12-equal-track grid with --grid-col-gutter gutters. Their flex
+            calc (col spans n tracks + n−1 gutters) is arithmetically
+            identical to CSS grid repeat(12, minmax(0,1fr)) + column-gap,
+            verified against the live SSR at 1440x900 (logo col x=20 w=690,
+            nav col x=730 w=453.3, right col x=1203.3 w=216.7). */}
+        <div
+          className="promo-header__row gap-x-[calc(var(--scale-px)*10)] min-[980px]:gap-x-[calc(var(--scale-px)*20)]"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(12, minmax(0, 1fr))",
+          }}
+        >
+          {/* logo: col--8 base, col--5:md, col--6:xl */}
+          <div className="promo-header__logo col-span-8 min-[980px]:col-span-5 min-[1200px]:col-span-6">
+            <Link
+              href="/"
+              className="flex items-center gap-2 no-underline"
+              aria-label="DevStarLabs homepage"
+              onClick={closeMenu}
+            >
+              <span className="font-display text-[19px] uppercase leading-none tracking-tight">
+                DevStar
+              </span>
+              <span className="font-display text-[19px] uppercase leading-none tracking-tight text-[var(--c-orange)]">
+                .
+              </span>
+              <span className="font-display text-[19px] uppercase leading-none tracking-tight">
+                Labs
+              </span>
+            </Link>
+            <p className="promo-header__logo-text">
+              One Practice. One Card
+            </p>
+          </div>
 
-            {/* Desktop Nav — original's centered group */}
-            <nav className="promo-header__desktop-links hidden items-center gap-7 lg:flex">
-              {NAV.map((n) => {
-                const active = pathname.startsWith(n.href);
-                return (
-                  <Link
-                    key={n.href}
-                    href={n.href}
-                    className={`btn btn--nav text-sm normal-case tracking-normal ${
-                      active ? "is-active" : ""
-                    }`}
-                  >
-                    {n.label}
-                    <HoverAccent />
-                  </Link>
-                );
-              })}
-            </nav>
+          {/* Desktop Nav — their nav column: cols 7–10 of the 12-col row
+              (col--5:md / col--4:xl), left-aligned inside its column so the
+              group sits right-of-center, never space-between-centered */}
+          <nav className="promo-header__desktop-links col-span-5 min-[1200px]:col-span-4">
+            {NAV.map((n) => {
+              const active = pathname.startsWith(n.href);
+              return (
+                <Link
+                  key={n.href}
+                  href={n.href}
+                  className={`btn btn--nav text-sm normal-case tracking-normal ${
+                    active ? "is-active" : ""
+                  }`}
+                >
+                  {n.label}
+                  <HoverAccent />
+                </Link>
+              );
+            })}
+          </nav>
 
-            {/* Desktop right — Login text + Join filled pill */}
-            <div className="promo-header__content-right hidden shrink-0 items-center gap-7 lg:flex">
+          {/* Desktop right — their col--2 (justify-end): Login text + Join */}
+          <div className="col-span-2 hidden min-[980px]:flex items-center justify-end">
+            <div className="promo-header__desktop-links">
               <Link
                 href="/signin"
                 className={`btn btn--nav text-sm normal-case tracking-normal ${
@@ -250,31 +272,31 @@ export default function SiteHeader() {
                 <HoverAccent />
               </Link>
             </div>
-
-            {/* Mobile hamburger */}
-            <button
-              type="button"
-              onClick={() => setOpen(!open)}
-              className="flex h-10 w-10 items-center justify-center lg:hidden"
-              aria-label="Toggle menu"
-              style={{ color: "inherit" }}
-            >
-              <span className="relative block h-3 w-5">
-                <span
-                  className="absolute left-0 top-0 block h-px w-full"
-                  style={{ background: "currentColor" }}
-                />
-                <span
-                  className="absolute left-0 top-1.5 block h-px w-full"
-                  style={{ background: "currentColor" }}
-                />
-                <span
-                  className="absolute left-0 top-3 block h-px w-full"
-                  style={{ background: "currentColor" }}
-                />
-              </span>
-            </button>
           </div>
+
+          {/* Mobile hamburger — their col--4 (is-hidden:md-up), right-aligned */}
+          <button
+            type="button"
+            onClick={() => setOpen(!open)}
+            className="col-span-4 flex h-10 w-10 items-center justify-center justify-self-end min-[980px]:hidden"
+            aria-label="Toggle menu"
+            style={{ color: "inherit" }}
+          >
+            <span className="relative block h-3 w-5">
+              <span
+                className="absolute left-0 top-0 block h-px w-full"
+                style={{ background: "currentColor" }}
+              />
+              <span
+                className="absolute left-0 top-1.5 block h-px w-full"
+                style={{ background: "currentColor" }}
+              />
+              <span
+                className="absolute left-0 top-3 block h-px w-full"
+                style={{ background: "currentColor" }}
+              />
+            </span>
+          </button>
         </div>
       </header>
 
