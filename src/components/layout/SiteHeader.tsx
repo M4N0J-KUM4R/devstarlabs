@@ -154,6 +154,18 @@ export default function SiteHeader() {
 
   const closeMenu = () => setOpen(false);
 
+  /* follow.art header typography, ported as px so it does not depend on
+     their 10px root rem: their scale-text-rem = clamp(7px, 4px+.41667vw,
+     10px) (JS pins it to 10px on ≥1440 desktops and tall portrait
+     phones); nav/logo labels = ×1.3 (md-up) or ×1.2 (mobile), line-height
+     ×1.6. Measured ground truth: 13px @1440, 10.75px @1024, 12px @390. */
+  const headerTypeCss = `
+.promo-header .promo-header__text-sm{font-family:var(--font-body),Helvetica,Arial,sans-serif;font-weight:400;letter-spacing:-.03em;text-transform:none;font-size:clamp(8.4px,calc(4.8px + .5vw),12px);line-height:clamp(11.2px,calc(6.4px + .66667vw),16px)}
+@media (min-width:568px) and (max-width:979px) and (max-aspect-ratio:13/9){.promo-header .promo-header__text-sm{font-size:clamp(9.1px,calc(5.2px + .54167vw),13px)}}
+@media (max-width:567px) and (min-height:730px){.promo-header .promo-header__text-sm{font-size:12px;line-height:16px}}
+@media (min-width:980px){.promo-header .promo-header__text-sm{font-size:clamp(9.1px,calc(5.2px + .54167vw),13px)}}
+`;
+
   /* the header paints itself with the sheet colour it floats over
      (solid, never transparent); the hairline comes from CSS via the
      --border-auto/--expanded classes */
@@ -185,6 +197,9 @@ export default function SiteHeader() {
 
   return (
     <>
+      {/* scoped header typography (see headerTypeCss above) */}
+      <style dangerouslySetInnerHTML={{ __html: headerTypeCss }} />
+
       {/* px on the bar itself = their .px-1 (one --page-spacing each side);
           the hairline :after still spans the full viewport because it is
           absolutely positioned against the padding box edge */}
@@ -214,19 +229,11 @@ export default function SiteHeader() {
               aria-label="DevStarLabs homepage"
               onClick={closeMenu}
             >
-              <span className="font-display text-[19px] uppercase leading-none tracking-tight">
-                DevStar
-              </span>
-              <span className="font-display text-[19px] uppercase leading-none tracking-tight text-[var(--c-orange)]">
-                .
-              </span>
-              <span className="font-display text-[19px] uppercase leading-none tracking-tight">
-                Labs
-              </span>
-            </Link>
-            <p className="promo-header__logo-text">
-              One Practice. One Card
-            </p>
+            <span className="promo-header__text-sm">DevStar.Labs</span>
+          </Link>
+          <p className="promo-header__logo-text promo-header__text-sm opacity-60">
+            One Practice. One Card
+          </p>
           </div>
 
           {/* Desktop Nav — their nav column: cols 7–10 of the 12-col row
@@ -239,7 +246,7 @@ export default function SiteHeader() {
                 <Link
                   key={n.href}
                   href={n.href}
-                  className={`btn btn--nav text-sm normal-case tracking-normal ${
+                  className={`btn btn--nav btn--link promo-header__text-sm ${
                     active ? "is-active" : ""
                   }`}
                 >
@@ -255,7 +262,7 @@ export default function SiteHeader() {
             <div className="promo-header__desktop-links">
               <Link
                 href="/signin"
-                className={`btn btn--nav text-sm normal-case tracking-normal ${
+                className={`btn btn--nav btn--link promo-header__text-sm ${
                   pathname.startsWith("/signin") ? "is-active" : ""
                 }`}
               >
@@ -264,7 +271,7 @@ export default function SiteHeader() {
               </Link>
               <Link
                 href="/signup"
-                className={`btn btn--nav text-sm normal-case tracking-normal ${
+                className={`btn btn--nav btn--link promo-header__text-sm ${
                   pathname.startsWith("/signup") ? "is-active" : ""
                 }`}
               >
@@ -282,20 +289,17 @@ export default function SiteHeader() {
             aria-label="Toggle menu"
             style={{ color: "inherit" }}
           >
-            <span className="relative block h-3 w-5">
-              <span
-                className="absolute left-0 top-0 block h-px w-full"
-                style={{ background: "currentColor" }}
-              />
-              <span
-                className="absolute left-0 top-1.5 block h-px w-full"
-                style={{ background: "currentColor" }}
-              />
-              <span
-                className="absolute left-0 top-3 block h-px w-full"
-                style={{ background: "currentColor" }}
-              />
-            </span>
+            {/* their menu icon: two 40×8 strokes (sprite #menu,
+                stroke-width 1.2) — not a 3-line burger */}
+            <svg
+              width="40"
+              height="8"
+              viewBox="0 0 40 8"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path d="M0 2h40M0 6h40" stroke="currentColor" strokeWidth="1.2" />
+            </svg>
           </button>
         </div>
       </header>

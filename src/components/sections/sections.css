@@ -448,6 +448,17 @@
 .fixed-sign-up-button--transition-header{transition:transform 1.5s cubic-bezier(.55,0,.1,1)}
 .fixed-sign-up-button--hidden{opacity:0;z-index:-20!important}
 .fixed-sign-up-button__btn{width:100%}
+/* follow.art paints solid fills on .btn:after from --btn-background
+   (.btn--primary → --t-button_primary_background → --c-black). The
+   globals .btn port carries only the label/scribble (transparent bg,
+   inherit colour, 0 12px padding), so the fixed CTA draws its own box
+   here and takes the primary pair — black 217×80 @1440, white Join
+   bottom-left, 18px step-next icon top-right, exactly the reference's
+   measured layout. */
+.fixed-sign-up-button__btn::after{content:"";position:absolute;inset:0;background:var(--btn-background,var(--t-button_primary_background,var(--c-black)));z-index:-1}
+.fixed-sign-up-button__btn{padding:0;color:var(--btn-text,var(--t-button_primary_text,var(--c-white)));font-size:clamp(11.2px,calc(6.4px + .66667vw),16px);line-height:clamp(14px,calc(8px + .83334vw),20px)}
+@media (min-width:980px){.fixed-sign-up-button__btn{font-size:clamp(14px,calc(8px + .83334vw),20px);line-height:clamp(17.5px,calc(10px + 1.04167vw),25px)}}
+@media (max-width:567px) and (min-height:730px){.fixed-sign-up-button__btn{font-size:16px;line-height:20px}}
 .fixed-sign-up-button-stub{height:var(--sign-up-height);width:var(--sign-up-width)}
 @layer components;.group{align-items:flex-start;display:flex;flex-direction:row;flex-wrap:wrap;justify-content:flex-start}
 .group--smaller{gap:calc(var(--scale-px)*10)}
