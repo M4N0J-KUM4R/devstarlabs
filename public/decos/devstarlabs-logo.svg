@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="118 125 1014 1000" width="1014" height="1000">
+  <title>Devstarlabs logo</title>
+  <defs><radialGradient id="gAxis" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="500"><stop offset="0" stop-color="#F0500F"/><stop offset="0.3" stop-color="#F0500F"/><stop offset="0.44" stop-color="#F15413"/><stop offset="0.55" stop-color="#F6753A"/><stop offset="0.67" stop-color="#F98E56"/><stop offset="0.79" stop-color="#FDA36E"/><stop offset="0.94" stop-color="#FFB27F"/><stop offset="1" stop-color="#FFB27F"/></radialGradient><radialGradient id="gDiag" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="500"><stop offset="0" stop-color="#F0500F"/><stop offset="0.36" stop-color="#F0500F"/><stop offset="0.48" stop-color="#F68D58"/><stop offset="0.6" stop-color="#F9A778"/><stop offset="0.72" stop-color="#FCBF95"/><stop offset="0.84" stop-color="#FED2AA"/><stop offset="0.96" stop-color="#FFDDB8"/><stop offset="1" stop-color="#FFDDB8"/></radialGradient><radialGradient id="gStar" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#FFFEFD"/><stop offset="0.6" stop-color="#FFFCF8"/><stop offset="1" stop-color="#FFEEE3"/></radialGradient></defs>
+  <g id="mark">
+    <path d="M0,-496 A405.5,405.5 0 0 1 0,154 A405.5,405.5 0 0 1 0,-496 Z" fill="#fff" transform="translate(625,633) rotate(0)"/>
+    <path d="M0,-496 A405.5,405.5 0 0 1 0,154 A405.5,405.5 0 0 1 0,-496 Z" fill="#fff" transform="translate(625,633) rotate(90)"/>
+    <path d="M0,-496 A405.5,405.5 0 0 1 0,154 A405.5,405.5 0 0 1 0,-496 Z" fill="#fff" transform="translate(625,633) rotate(180)"/>
+    <path d="M0,-496 A405.5,405.5 0 0 1 0,154 A405.5,405.5 0 0 1 0,-496 Z" fill="#fff" transform="translate(625,633) rotate(270)"/>
+    <path d="M0,-500 A356.1,356.1 0 0 1 0,75 A356.1,356.1 0 0 1 0,-500 Z" fill="#fff" transform="translate(625,633) rotate(-49.5)"/>
+    <path d="M0,-500 A356.1,356.1 0 0 1 0,75 A356.1,356.1 0 0 1 0,-500 Z" fill="#fff" transform="translate(625,633) rotate(49.5)"/>
+    <path d="M0,-500 A356.1,356.1 0 0 1 0,75 A356.1,356.1 0 0 1 0,-500 Z" fill="#fff" transform="translate(625,633) rotate(130.5)"/>
+    <path d="M0,-500 A356.1,356.1 0 0 1 0,75 A356.1,356.1 0 0 1 0,-500 Z" fill="#fff" transform="translate(625,633) rotate(-130.5)"/>
+    <path d="M0,-500 A356.1,356.1 0 0 1 0,75 A356.1,356.1 0 0 1 0,-500 Z" fill="url(#gDiag)" opacity="0.72" transform="translate(625,633) rotate(-49.5)"/>
+    <path d="M0,-500 A356.1,356.1 0 0 1 0,75 A356.1,356.1 0 0 1 0,-500 Z" fill="url(#gDiag)" opacity="0.72" transform="translate(625,633) rotate(49.5)"/>
+    <path d="M0,-500 A356.1,356.1 0 0 1 0,75 A356.1,356.1 0 0 1 0,-500 Z" fill="url(#gDiag)" opacity="0.72" transform="translate(625,633) rotate(130.5)"/>
+    <path d="M0,-500 A356.1,356.1 0 0 1 0,75 A356.1,356.1 0 0 1 0,-500 Z" fill="url(#gDiag)" opacity="0.72" transform="translate(625,633) rotate(-130.5)"/>
+    <path d="M0,-496 A405.5,405.5 0 0 1 0,154 A405.5,405.5 0 0 1 0,-496 Z" fill="url(#gAxis)" opacity="0.72" transform="translate(625,633) rotate(0)"/>
+    <path d="M0,-496 A405.5,405.5 0 0 1 0,154 A405.5,405.5 0 0 1 0,-496 Z" fill="url(#gAxis)" opacity="0.72" transform="translate(625,633) rotate(90)"/>
+    <path d="M0,-496 A405.5,405.5 0 0 1 0,154 A405.5,405.5 0 0 1 0,-496 Z" fill="url(#gAxis)" opacity="0.72" transform="translate(625,633) rotate(180)"/>
+    <path d="M0,-496 A405.5,405.5 0 0 1 0,154 A405.5,405.5 0 0 1 0,-496 Z" fill="url(#gAxis)" opacity="0.72" transform="translate(625,633) rotate(270)"/>
+    <path d="M625,476 A157,157 0 0 0 782,633 A157,157 0 0 0 625,790 A157,157 0 0 0 468,633 A157,157 0 0 0 625,476 Z" fill="url(#gStar)"/>
+  </g>
+</svg>

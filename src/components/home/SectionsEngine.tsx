@@ -112,61 +112,6 @@ void main() {
     gl_FragColor = texture2D(imageTexture, vec2(1.0 - vUv.x, vUv.y));
     gl_FragColor.a = alpha;
 }`;
-/* Landing2GetSeenWebGl shaders (BDU8auKu.js) — verbatim */
-const GS_VERT = `
-#ifndef PI
-#define PI 3.141592653589
-#endif
-#define BUBBLE_AMOUNT 0.2
-#define BUBBLE_RADIUS 0.9
-uniform vec2 mousePos;
-uniform float progressStart;
-uniform float progressEnd;
-uniform float radius;
-varying vec2 vUv;
-float scaleValue(float value, float valueMin, float valueMax, float targetMin, float targetMax) {
-    return clamp(targetMin + (value - valueMin) / (valueMax - valueMin) * (targetMax - targetMin), min(targetMin, targetMax), max(targetMin, targetMax));
-}
-vec4 bend(vec4 coords, float progressStart, float progressEnd) {
-    vec4 bentCoords = coords;
-    float yAnimationOffset = 0.25;
-    float adjustedProgress = progressStart + (1.0 - coords.y) * yAnimationOffset;
-    if (progressStart > 0.5) {
-        float endProgressStart = scaleValue(progressStart, 0.5, 1.0, 0.0, 1.0);
-        adjustedProgress = progressStart * endProgressStart + adjustedProgress * (1.0 - endProgressStart);
-    }
-    float angle = (1.0 - adjustedProgress) * PI;
-    float zOffset = (2.0 - cos(angle) * 2.0);
-    #if USE_MOUSE
-        float yOffset = (1.0 - progressStart) * 0.25 + progressEnd * 2.25;
-    #else
-        float yOffset = (1.0 - progressStart) * 0.55 + progressEnd * 2.25;
-    #endif
-    bentCoords.y = bentCoords.y * cos(angle) + yOffset;
-    bentCoords.z = bentCoords.z * sin(angle) - zOffset;
-    return bentCoords;
-}
-void main() {
-    vUv = uv;
-    vec4 bentPosition = bend(vec4(position, 1.0), progressStart, progressEnd);
-    vec4 pos = modelViewMatrix * bentPosition;
-    vec4 posScreen = projectionMatrix * pos;
-    vec3 posScreenNormalized = posScreen.xyz / posScreen.w;
-    #if USE_MOUSE
-        float mouseDistance = length(mousePos.xy - posScreenNormalized.xy);
-        float displacementStrength = 1.0 - smoothstep(0.0, BUBBLE_RADIUS, mouseDistance);
-        float displacement = displacementStrength * BUBBLE_AMOUNT;
-        pos.z += displacement;
-    #endif
-    gl_Position = projectionMatrix * pos;
-}`;
-const GS_FRAG = `
-varying vec2 vUv;
-uniform sampler2D imageTexture;
-void main() {
-    gl_FragColor = texture2D(imageTexture, vUv);
-}`;
-
 function loadTex(src: string) {
   const t = new THREE.TextureLoader().load(src);
   t.colorSpace = THREE.SRGBColorSpace;
@@ -341,69 +286,10 @@ export default function SectionsEngine() {
       }
     }
 
-    /* ---- 8. Landing2GetSeenWebGl — bending video preview plane ---- */
-    {
-      const container = $(".landing-2-get-seen-webgl") as HTMLElement | null;
-      if (container) {
-        const app = makeApp(container, {
-          fov: 28, near: 0, far: 200,
-          position: [0, -0.048, 2.04], rotation: [0, 0, 0],
-        });
-        const R = (1 / 460) * 540;
-        const geo = new THREE.PlaneGeometry(1, R, 20, 20);
-        const uniforms = {
-          imageTexture: { value: loadTex("/sections/video-preview.png") },
-          mousePos: { value: new THREE.Vector2(0, 0) },
-          progressStart: { value: 0 },
-          progressEnd: { value: 0 },
-          radius: { value: 1 },
-        };
-        const mat = new THREE.ShaderMaterial({
-          side: THREE.DoubleSide, fragmentShader: GS_FRAG, vertexShader: GS_VERT,
-          uniforms, defines: { USE_MOUSE: mob980() ? 0 : 1 },
-        });
-        app.scene.add(new THREE.Mesh(geo, mat));
-
-        let mouseX = 0.5, mouseY = 0.5;
-        const onMouse = (e: MouseEvent) => {
-          mouseX = e.clientX / window.innerWidth;
-          mouseY = e.clientY / window.innerHeight;
-        };
-        window.addEventListener("mousemove", onMouse, { passive: true });
-        const mx = chaser(() => mouseX, 0.2);
-        const my = chaser(() => mouseY, 0.2);
-
-        const gsSec = $(".js-get-seen-section");
-        app.onRender(() => {
-          if (!mob980()) {
-            uniforms.mousePos.value.set(mx.update() * 2 - 1, (my.update() * 2 - 1) * -1);
-          }
-          if (gsSec) {
-            const top = gsSec.getBoundingClientRect().top;
-            const vh = window.innerHeight;
-            const o = mapC(top / vh, 0.75, 0, 0, 1, true);
-            const s = mapC(top / vh, 0, -2, 0, 1, true);
-            const a = easeInSine(s);
-            const r = easeInOutSine(o - s);
-            uniforms.progressStart.value = mapC(r, 0, 1, -0.25, 1);
-            uniforms.progressEnd.value = a;
-          }
-        });
-        const io = new IntersectionObserver(
-          (es) => {
-            if (es.some((e) => e.isIntersecting)) { app.start(); io.disconnect(); }
-          },
-          { rootMargin: "100% 0px" },
-        );
-        io.observe(container);
-        cleanups.push(() => {
-          io.disconnect();
-          app.dispose();
-          if (container.contains(app.renderer.domElement)) app.renderer.domElement.remove();
-          window.removeEventListener("mousemove", onMouse);
-        });
-      }
-    }
+    /* ---- 8. Landing2GetSeenWebGl slot — the original bends a video
+          preview plane here; per brand direction the ring centre now
+          carries the static Devstarlabs flower mark (img in the S2
+          markup), so no WebGL plane is mounted. */
 
     /* ---- 9. Landing5NexusWebGl — orbit camera + two bent cards ---- */
     {
