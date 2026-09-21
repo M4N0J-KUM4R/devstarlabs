@@ -1078,44 +1078,6 @@ hr {
   }
 }
 
-/* ---- testimonials 3D review carousel (Landing9TestimonialsWebGl port) -
-   One alpha WebGL canvas between the "Said about" wordmark and the nav
-   row. Cards ride a bent-cylinder track; the stage is the drag surface
-   (grab cursor, like the reference), buttons keep their .btn behavior. */
-.t9 {
-  position: relative;
-  margin-top: calc(var(--scale-px) * 10);
-}
-.t9__stage {
-  position: relative;
-  height: clamp(340px, 44vw, 640px);
-  cursor: grab;
-  touch-action: pan-y;
-  outline: none;
-}
-.t9__stage:focus-visible {
-  box-shadow: inset 0 0 0 2px var(--c-orange);
-}
-.t9__stage.is-dragging {
-  cursor: grabbing;
-}
-.t9__stage canvas {
-  position: absolute;
-  inset: 0;
-  display: block;
-}
-.t9__nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: calc(var(--scale-px) * 16);
-  margin-top: calc(var(--scale-px) * 20);
-}
-.t9__count {
-  opacity: 0.7;
-  font-variant-numeric: tabular-nums;
-}
-
 /* ============================================================
    SUBPAGE SYSTEM — ported from follow.art's page-level CSS
    (PageHeader / TextPage / PlansDifference / faq / community)

@@ -511,11 +511,15 @@
 .landing-9-testimonials-webgl.is-dragging{cursor:grabbing}
 .landing-9-testimonials-webgl__navigation{align-items:center;bottom:var(--md,calc(var(--scale-px)*-30 + 5vw)) var(--n-md,calc(var(--scale-px)*7 + 5vw));display:flex;justify-content:space-between;left:50%;padding:var(--md,0) var(--n-md,0 calc(var(--scale-px)*20));position:absolute;transform:translate(-50%);width:var(--md,31.5068493151vw) var(--n-md,100%)}
 .landing-9-testimonials-webgl__navigation .is-disabled{opacity:.5}
+/* canvas injected by the factory — pinned over the whole layer */
+.landing-9-testimonials-webgl canvas{bottom:0;left:0;position:absolute;right:0;top:0}
+/* ends dimmed like the reference; the :is() also covers the real disabled
+   attribute at higher specificity than the global .btn:disabled */
+.landing-9-testimonials-webgl__navigation .btn:is(.is-disabled,:disabled){cursor:default;opacity:.5;pointer-events:none}
 .svg-fix{display:block; width:100%; height:auto;}
 .title-children-wrapper{width:100%;}
 .title-children-wrapper .word{width:100%;}
-.t9-nav-btn{background:none; border:none; cursor:pointer; color:var(--t-heading,#000); padding:8px; display:flex; opacity:1;}
-.t9-nav-btn.is-disabled{opacity:.5; pointer-events:none;}
+
 .fixed-sign-up-button{transition: transform 1.5s cubic-bezier(.55,0,.1,1);}
 
 

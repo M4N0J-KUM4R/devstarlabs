@@ -21,7 +21,16 @@ export default function Testimonials() {
           data-sticky-bottom
         >
           <div className="section-9 pb-1 pt-promo-header">
-            <div dangerouslySetInnerHTML={{ __html: S9_HEAD_HTML }} />
+            {/* display:contents — the reference has the description <p>
+                and the header <div> as DIRECT flex children of
+                .section-9 (justify-content:space-between + the
+                description's col--last:md order:1 put the wordmark on
+                top and "Our Members Say" at the bottom); a plain
+                wrapper div would swallow them out of the flex layout */}
+            <div
+              style={{ display: "contents" }}
+              dangerouslySetInnerHTML={{ __html: S9_HEAD_HTML }}
+            />
             <div className="section-9__cards">
               <TestimonialCarousel />
             </div>

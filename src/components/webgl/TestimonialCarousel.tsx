@@ -37,6 +37,21 @@ import HoverAccent from "@/components/system/HoverAccent";
    is preserved: `progress` MUST be `{ value: Vector2 }` — a raw
    Vector2 makes the renderer's uniform upload read `.x` of undefined
    and silently kills the frame loop (empty canvas).
+
+   Structure (also verbatim): the root div IS the original
+   `.landing-9-testimonials-webgl` — an absolute layer filling
+   `.section-9__cards` and bleeding 5vw past it top and bottom. The
+   canvas is appended straight into the root and the navigation bar is
+   absolutely positioned inside it (width 31.5vw, centred, space-
+   between), exactly like the reference render function:
+
+     div.landing-9-testimonials-webgl (+.is-dragging)
+       ├─ canvas                       (injected by the factory)
+       └─ div.landing-9-testimonials-webgl__navigation
+            ├─ btn block link accent / text-smaller — icon:step-back,
+            │  title:"Prev", disabled on first card
+            └─ btn block link accent / text-smaller — icon:step-next,
+               title:"Next", disabled on last card
    ===================================================================== */
 
 const COUNT = 8;
@@ -47,6 +62,30 @@ const REVIEW_IMAGES = Array.from(
   { length: COUNT },
   (_, i) => `/reviews/review-${i + 1}.png`,
 );
+
+/* icons.a4BZ7Lj0.svg#step-back / #step-next — verbatim symbol paths */
+function StepIcon({ dir }: { dir: "back" | "next" }) {
+  return (
+    <svg
+      className={`btn__icon icon icon-step-${dir}`}
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        stroke="currentColor"
+        strokeWidth="1.2"
+        d={
+          dir === "back"
+            ? "M17 9A8 8 0 1 1 1 9a8 8 0 0 1 16 0Zm0 0H4m0 0 5-5M4 9l5 5"
+            : "M1 9a8 8 0 1 0 16 0A8 8 0 0 0 1 9Zm0 0h13m0 0L9 4m5 5-5 5"
+        }
+      />
+    </svg>
+  );
+}
 
 const clampN = (v: number, a: number, b: number) =>
   Math.min(Math.max(v, a), b);
@@ -227,14 +266,14 @@ const mapC = (v: number, a: number, b: number, c: number, d: number) =>
 /* ===================================================================== */
 
 export default function TestimonialCarousel() {
-  const hostRef = useRef<HTMLDivElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
   /* engine handle: target index setter wired into the render loop */
   const navRef = useRef<{ next: () => void; prev: () => void } | null>(null);
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    const host = hostRef.current;
-    if (!host) return;
+    const root = rootRef.current;
+    if (!root) return;
 
     const reducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
@@ -245,8 +284,7 @@ export default function TestimonialCarousel() {
     renderer.toneMapping = NoToneMapping;
     renderer.setPixelRatio(2); /* pinned, like the reference */
     const canvas = renderer.domElement;
-    canvas.className = "t9-canvas";
-    host.appendChild(canvas);
+    root.appendChild(canvas);
 
     const BASE_FOV = mob980() ? 18.5 : 28;
     const camera = new PerspectiveCamera(BASE_FOV, 1, 0.1, 69);
@@ -255,8 +293,8 @@ export default function TestimonialCarousel() {
     const scene = new Scene();
 
     const resize = () => {
-      const w = host.clientWidth || 1;
-      const h = host.clientHeight || 1;
+      const w = root.clientWidth || 1;
+      const h = root.clientHeight || 1;
       renderer.setSize(w, h);
       const aspect = w / h;
       camera.aspect = aspect;
@@ -264,7 +302,7 @@ export default function TestimonialCarousel() {
       camera.updateProjectionMatrix();
     };
     const ro = new ResizeObserver(resize);
-    ro.observe(host);
+    ro.observe(root);
     resize();
 
     /* ---------- springs ---------- */
@@ -314,7 +352,7 @@ export default function TestimonialCarousel() {
     const onDragEnd = (startXY: number, e: MouseEvent | TouchEvent | PointerEvent) => {
       if (!dragging) return;
       dragging = false;
-      host.classList.remove("is-dragging");
+      root.classList.remove("is-dragging");
       const xy = pageXOf(e);
       inertiaX.add(xy);
       posSpring.reset(dragPos);
@@ -335,7 +373,7 @@ export default function TestimonialCarousel() {
       const startXY = pageXOf(e);
       dragPos = D = posSpring.value;
       inertiaX.add(startXY);
-      host.classList.add("is-dragging");
+      root.classList.add("is-dragging");
       const move = (ev: PointerEvent) => onDragMove(startXY, ev);
       const end = (ev: PointerEvent) => {
         onDragEnd(startXY, ev);
@@ -359,7 +397,7 @@ export default function TestimonialCarousel() {
       const startXY = e.pageX;
       dragPos = D = posSpring.value;
       inertiaX.add(startXY);
-      host.classList.add("is-dragging");
+      root.classList.add("is-dragging");
       const move = (ev: MouseEvent) => onDragMove(startXY, ev);
       const end = (ev: MouseEvent) => {
         onDragEnd(startXY, ev);
@@ -380,7 +418,7 @@ export default function TestimonialCarousel() {
       const startXY = e.touches[0].pageX;
       dragPos = D = posSpring.value;
       inertiaX.add(startXY);
-      host.classList.add("is-dragging");
+      root.classList.add("is-dragging");
       const move = (ev: TouchEvent) => onDragMove(startXY, ev);
       const end = (ev: TouchEvent) => {
         onDragEnd(startXY, ev);
@@ -413,10 +451,10 @@ export default function TestimonialCarousel() {
       applyDrag(startXY, xy);
       e.preventDefault();
     };
-    host.addEventListener("pointerdown", onPointerDown);
-    host.addEventListener("mousedown", onMouseDown);
-    host.addEventListener("touchstart", onTouchStart, { passive: false });
-    host.addEventListener("keydown", onKeyDown);
+    root.addEventListener("pointerdown", onPointerDown);
+    root.addEventListener("mousedown", onMouseDown);
+    root.addEventListener("touchstart", onTouchStart, { passive: false });
+    root.addEventListener("keydown", onKeyDown);
 
     /* ---------- build cards (verbatim ue() flow) ---------- */
     type Card = {
@@ -538,11 +576,11 @@ export default function TestimonialCarousel() {
       ro.disconnect();
       navRef.current = null;
       window.removeEventListener("mousemove", onMouseMove);
-      host.removeEventListener("pointerdown", onPointerDown);
-      host.removeEventListener("mousedown", onMouseDown);
-      host.removeEventListener("touchstart", onTouchStart);
-      host.removeEventListener("keydown", onKeyDown);
-      host.classList.remove("is-dragging");
+      root.removeEventListener("pointerdown", onPointerDown);
+      root.removeEventListener("mousedown", onMouseDown);
+      root.removeEventListener("touchstart", onTouchStart);
+      root.removeEventListener("keydown", onKeyDown);
+      root.classList.remove("is-dragging");
       for (const c of cards) {
         scene.remove(c.mesh);
         (c.mat.uniforms.imageTexture.value as { dispose: () => void }).dispose();
@@ -554,52 +592,45 @@ export default function TestimonialCarousel() {
     };
   }, []);
 
+  /* their render(): root layer + navigation with two block/link/accent
+     text-smaller buttons — Prev (icon left) and Next (icon right),
+     disabled at the ends. No counter in the reference. */
   return (
-    <div className="t9" role="group" aria-roledescription="carousel" aria-label="Client reviews">
-      <div
-        ref={hostRef}
-        className="t9__stage"
-        tabIndex={0}
-        aria-label="Drag, or use arrow keys to browse reviews"
-      />
-      <div className="t9__nav">
-        <FillButtonLike dir="prev" disabled={index === 0} onClick={() => navRef.current?.prev()}>
-          &larr; Prev
-        </FillButtonLike>
-        <span className="t9__count label" aria-live="polite">
-          {index + 1} / {COUNT}
-        </span>
-        <FillButtonLike dir="next" disabled={index === COUNT - 1} onClick={() => navRef.current?.next()}>
-          Next &rarr;
-        </FillButtonLike>
+    <div
+      ref={rootRef}
+      className="landing-9-testimonials-webgl"
+      role="group"
+      aria-roledescription="carousel"
+      aria-label="Client reviews"
+    >
+      <div className="landing-9-testimonials-webgl__navigation">
+        <button
+          type="button"
+          className={`btn btn--block btn--link btn--accent btn--text-smaller${
+            index === 0 ? " is-disabled" : ""
+          }`}
+          onClick={() => navRef.current?.prev()}
+          disabled={index === 0}
+          aria-label="Previous review"
+        >
+          <StepIcon dir="back" />
+          <span className="btn__text">Prev</span>
+          <HoverAccent />
+        </button>
+        <button
+          type="button"
+          className={`btn btn--block btn--link btn--accent btn--text-smaller${
+            index === COUNT - 1 ? " is-disabled" : ""
+          }`}
+          onClick={() => navRef.current?.next()}
+          disabled={index === COUNT - 1}
+          aria-label="Next review"
+        >
+          <span className="btn__text">Next</span>
+          <StepIcon dir="next" />
+          <HoverAccent />
+        </button>
       </div>
     </div>
-  );
-}
-
-/* Local nav button — same .btn markup the rest of the site uses
-   (hover scribble via .btn__hover-accent, disabled ends dimmed). */
-function FillButtonLike({
-  dir,
-  disabled,
-  onClick,
-  children,
-}: {
-  dir: "prev" | "next";
-  disabled: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <button
-      type="button"
-      className={`btn btn--accent btn--pill t9-${dir}`}
-      onClick={onClick}
-      disabled={disabled}
-      aria-label={dir === "prev" ? "Previous review" : "Next review"}
-    >
-      {children}
-      <HoverAccent />
-    </button>
   );
 }
